@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tính tổng giờ làm việc</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .input-section {
+            margin-bottom: 30px;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #555;
+        }
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 14px;
+            resize: vertical;
+        }
+        button {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+        button:hover {
+            transform: translateY(-2px);
+        }
+        .result {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border-left: 5px solid #28a745;
+        }
+        .result h3 {
+            color: #28a745;
+            margin-top: 0;
+        }
+        .hours-list {
+            background: #e9ecef;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: monospace;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border-left: 5px solid #dc3545;
+        }
+        .example {
+            background: #d1ecf1;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+        .quick-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .quick-buttons button {
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🕐 Tính tổng giờ làm việc</h1>
+        
+        <div class="input-section">
+            <label for="dataInput">Paste dữ liệu từ bảng chấm công (copy từ web):</label>
+            <textarea id="dataInput" placeholder="Paste dữ liệu ở đây...&#10;Ví dụ:&#10;08	CN	W	16:30		22:00	5.50	-	-	-	Đã duyệt&#10;09	T2	W	17:00		22:00	5.00	-	-	-	Đã duyệt&#10;..."></textarea>
+            
+            <div class="quick-buttons">
+                <button onclick="calculateHours()">📊 Tính tổng giờ</button>
+                <button onclick="clearAll()">🗑️ Xóa hết</button>
+                <button onclick="loadExample()">📝 Ví dụ</button>
+            </div>
+        </div>
+
+        <div class="example">
+            <strong>Hướng dẫn:</strong> Copy toàn bộ bảng từ trang web và paste vào ô trên. 
+            Công cụ sẽ tự động tìm và tính tổng cột giờ làm việc.
+        </div>
+
+        <div id="result"></div>
+    </div>
+
+    <script>
+        function calculateHours() {
+            const input = document.getElementById('dataInput').value;
+            const resultDiv = document.getElementById('result');
+            
+            if (!input.trim()) {
+                resultDiv.innerHTML = '<div class="error">Vui lòng paste dữ liệu vào ô trên!</div>';
+                return;
+            }
+            
+            try {
+                // Tách các dòng
+                const lines = input.split('\n').filter(line => line.trim());
+                
+                // Tìm các số thập phân trong mỗi dòng (có thể là giờ làm việc)
+                const hours = [];
+                const hourPattern = /\b\d+\.\d{2}\b/g;
+                
+                lines.forEach(line => {
+                    const matches = line.match(hourPattern);
+                    if (matches) {
+                        // Lọc ra những số có thể là giờ làm việc (thường từ 1-24)
+                        matches.forEach(match => {
+                            const num = parseFloat(match);
+                            if (num > 0 && num <= 24) {
+                                hours.push(num);
+                            }
+                        });
+                    }
+                });
+                
+                if (hours.length === 0) {
+                    resultDiv.innerHTML = '<div class="error">Không tìm thấy dữ liệu giờ làm việc! Vui lòng kiểm tra lại dữ liệu.</div>';
+                    return;
+                }
+                
+                // Tính tổng
+                const total = hours.reduce((sum, hour) => sum + hour, 0);
+                
+                // Hiển thị kết quả
+                resultDiv.innerHTML = `
+                    <div class="result">
+                        <h3>✅ Kết quả tính toán</h3>
+                        <div class="hours-list">
+                            <strong>Giờ làm việc từng ngày:</strong><br>
+                            ${hours.map((h, i) => `Ngày ${i+1}: ${h} giờ`).join('<br>')}
+                        </div>
+                        <h2 style="color: #28a745; text-align: center; margin: 20px 0;">
+                            🎯 Tổng cộng: <span style="font-size: 1.2em;">${total.toFixed(2)} giờ</span>
+                        </h2>
+                        <p style="text-align: center; color: #666;">
+                            Số ngày làm việc: ${hours.length} ngày<br>
+                            Trung bình: ${(total/hours.length).toFixed(2)} giờ/ngày
+                        </p>
+                    </div>
+                `;
+                
+            } catch (error) {
+                resultDiv.innerHTML = '<div class="error">Có lỗi xảy ra khi xử lý dữ liệu. Vui lòng kiểm tra định dạng!</div>';
+            }
+        }
+        
+        function clearAll() {
+            document.getElementById('dataInput').value = '';
+            document.getElementById('result').innerHTML = '';
+        }
+        
+        function loadExample() {
+            const exampleData = `08	CN	W	16:30		22:00	5.50	-	-	-	Đã duyệt
+09	T2	W	17:00		22:00	5.00	-	-	-	Đã duyệt
+10	T3	W	17:30		22:30	5.00	-	-	-	Đã duyệt
+11	T4	W	17:00		22:30	5.50	-	-	-	Đã duyệt
+12	T5	W	17:00		22:00	5.00	-	-	-	Đã duyệt
+13	T6	W	13:00		22:30	9.50	-	-	-	Đã duyệt
+21	T7	W	16:00		22:00	6.00	-	-	-	Đã duyệt
+22	CN	W	10:00		14:00	4.00	-	-	-	Đã duyệt
+23	T2	W	10:15	15:00	18:00	22:00	8.75	-	-	-	Đã duyệt`;
+            
+            document.getElementById('dataInput').value = exampleData;
+        }
+        
+        // Tự động tính khi paste dữ liệu
+        document.getElementById('dataInput').addEventListener('paste', function() {
+            setTimeout(calculateHours, 100);
+        });
+    </script>
+</body>
+</html>
