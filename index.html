@@ -109,16 +109,32 @@
             <label for="dataInput">Paste dữ liệu từ bảng chấm công (copy từ web):</label>
             <textarea id="dataInput" placeholder="Paste dữ liệu ở đây...&#10;Ví dụ:&#10;08	CN	W	16:30		22:00	5.50	-	-	-	Đã duyệt&#10;09	T2	W	17:00		22:00	5.00	-	-	-	Đã duyệt&#10;..."></textarea>
             
+            <div style="display: flex; gap: 15px; margin: 15px 0; align-items: center; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 200px;">
+                    <label for="hourlyRate" style="margin-bottom: 5px;">💰 Lương theo giờ (VNĐ):</label>
+                    <input type="number" id="hourlyRate" placeholder="Ví dụ: 50000" 
+                           style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 6px; font-size: 16px;">
+                </div>
+                <div style="display: flex; gap: 5px;">
+                    <button onclick="setRate(30000)" style="padding: 8px 12px; font-size: 12px;">30k</button>
+                    <button onclick="setRate(50000)" style="padding: 8px 12px; font-size: 12px;">50k</button>
+                    <button onclick="setRate(80000)" style="padding: 8px 12px; font-size: 12px;">80k</button>
+                    <button onclick="setRate(100000)" style="padding: 8px 12px; font-size: 12px;">100k</button>
+                </div>
+            </div>
+            
             <div class="quick-buttons">
-                <button onclick="calculateHours()">📊 Tính tổng giờ</button>
+                <button onclick="calculateHours()">📊 Tính tổng giờ & lương</button>
                 <button onclick="clearAll()">🗑️ Xóa hết</button>
                 <button onclick="loadExample()">📝 Ví dụ</button>
             </div>
         </div>
 
         <div class="example">
-            <strong>Hướng dẫn:</strong> Copy toàn bộ bảng từ trang web và paste vào ô trên. 
-            Công cụ sẽ tự động tìm và tính tổng cột giờ làm việc.
+            <strong>Hướng dẫn:</strong> 
+            <br>1. Copy toàn bộ bảng từ trang web và paste vào ô trên
+            <br>2. Nhập mức lương theo giờ (hoặc chọn nút nhanh: 30k, 50k, 80k, 100k)
+            <br>3. Công cụ sẽ tự động tính tổng giờ làm việc và lương
         </div>
 
         <div id="result"></div>
@@ -127,6 +143,7 @@
     <script>
         function calculateHours() {
             const input = document.getElementById('dataInput').value;
+            const hourlyRate = parseFloat(document.getElementById('hourlyRate').value) || 0;
             const resultDiv = document.getElementById('result');
             
             if (!input.trim()) {
@@ -162,8 +179,32 @@
                 
                 // Tính tổng
                 const total = hours.reduce((sum, hour) => sum + hour, 0);
+                const totalSalary = total * hourlyRate;
+                
+                // Format số tiền
+                const formatMoney = (amount) => {
+                    return new Intl.NumberFormat('vi-VN').format(amount) + ' VNĐ';
+                };
                 
                 // Hiển thị kết quả
+                let salarySection = '';
+                if (hourlyRate > 0) {
+                    salarySection = `
+                        <div style="background: linear-gradient(135deg, #28a745, #20c997); color: white; padding: 20px; border-radius: 10px; margin: 20px 0; text-align: center;">
+                            <h2 style="margin: 0 0 10px 0; color: white;">💵 TÍNH LƯƠNG</h2>
+                            <div style="font-size: 18px; margin: 10px 0;">
+                                <strong>${total.toFixed(2)} giờ × ${formatMoney(hourlyRate).replace(' VNĐ', '')} VNĐ/giờ</strong>
+                            </div>
+                            <div style="font-size: 24px; font-weight: bold; background: rgba(255,255,255,0.2); padding: 15px; border-radius: 8px; margin: 15px 0;">
+                                🎯 Tổng lương: ${formatMoney(totalSalary)}
+                            </div>
+                            <div style="font-size: 14px; opacity: 0.9;">
+                                Lương trung bình/ngày: ${formatMoney((totalSalary/hours.length))}
+                            </div>
+                        </div>
+                    `;
+                }
+                
                 resultDiv.innerHTML = `
                     <div class="result">
                         <h3>✅ Kết quả tính toán</h3>
@@ -172,12 +213,13 @@
                             ${hours.map((h, i) => `Ngày ${i+1}: ${h} giờ`).join('<br>')}
                         </div>
                         <h2 style="color: #28a745; text-align: center; margin: 20px 0;">
-                            🎯 Tổng cộng: <span style="font-size: 1.2em;">${total.toFixed(2)} giờ</span>
+                            🕐 Tổng cộng: <span style="font-size: 1.2em;">${total.toFixed(2)} giờ</span>
                         </h2>
                         <p style="text-align: center; color: #666;">
                             Số ngày làm việc: ${hours.length} ngày<br>
                             Trung bình: ${(total/hours.length).toFixed(2)} giờ/ngày
                         </p>
+                        ${salarySection}
                     </div>
                 `;
                 
@@ -188,7 +230,12 @@
         
         function clearAll() {
             document.getElementById('dataInput').value = '';
+            document.getElementById('hourlyRate').value = '';
             document.getElementById('result').innerHTML = '';
+        }
+        
+        function setRate(rate) {
+            document.getElementById('hourlyRate').value = rate;
         }
         
         function loadExample() {
