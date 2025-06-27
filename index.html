@@ -109,13 +109,13 @@
             <label for="dataInput">Paste dữ liệu từ bảng chấm công (copy từ web):</label>
             <textarea id="dataInput" placeholder="Paste dữ liệu ở đây...&#10;Ví dụ:&#10;08	CN	W	16:30		22:00	5.50	-	-	-	Đã duyệt&#10;09	T2	W	17:00		22:00	5.00	-	-	-	Đã duyệt&#10;..."></textarea>
             
-            <div style="display: flex; gap: 15px; margin: 15px 0; align-items: center; flex-wrap: wrap;">
+            <div style="display: flex; gap: 34px; margin: 15px 0; align-items: self-end; flex-wrap: wrap;">
                 <div style="flex: 1; min-width: 200px;">
                     <label for="hourlyRate" style="margin-bottom: 5px;">💰 Lương theo giờ (VNĐ):</label>
                     <input type="number" id="hourlyRate" placeholder="Ví dụ: 50000" 
                            style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 6px; font-size: 16px;">
                 </div>
-                <div style="display: flex; gap: 5px;">
+                <div style="display: flex; gap: 7px; padding: 5px 0px">
                     <button onclick="setRate(30000)" style="padding: 8px 12px; font-size: 12px;">30k</button>
                     <button onclick="setRate(50000)" style="padding: 8px 12px; font-size: 12px;">50k</button>
                     <button onclick="setRate(80000)" style="padding: 8px 12px; font-size: 12px;">80k</button>
