@@ -94,10 +94,11 @@
                 
                 // Tìm các số thập phân trong mỗi dòng (có thể là giờ làm việc)
                 const hours = [];
-                const hourPattern = /\b\d+\.\d{2}\b/g;
+                const hourPattern = /\b\d+[.,]\d{1,2}\b/g;
                 
                 lines.forEach(line => {
-                    const matches = line.match(hourPattern);
+                    const normalizedLine = line.replace(/,/g, '.'); // Chuẩn hóa dấu phẩy thành dấu chấm
+                    const matches = normalizedLine.match(hourPattern);
                     if (matches) {
                         // Lọc ra những số có thể là giờ làm việc (thường từ 1-24)
                         matches.forEach(match => {
