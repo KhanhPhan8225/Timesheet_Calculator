@@ -4,102 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tính tổng giờ làm việc</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-        }
-        .container {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
-        h1 {
-            color: #333;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .input-section {
-            margin-bottom: 30px;
-        }
-        label {
-            display: block;
-            margin-bottom: 10px;
-            font-weight: bold;
-            color: #555;
-        }
-        textarea {
-            width: 100%;
-            height: 150px;
-            padding: 15px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-family: monospace;
-            font-size: 14px;
-            resize: vertical;
-        }
-        button {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-            transition: transform 0.2s;
-        }
-        button:hover {
-            transform: translateY(-2px);
-        }
-        .result {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 8px;
-            margin-top: 20px;
-            border-left: 5px solid #28a745;
-        }
-        .result h3 {
-            color: #28a745;
-            margin-top: 0;
-        }
-        .hours-list {
-            background: #e9ecef;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 15px 0;
-            font-family: monospace;
-        }
-        .error {
-            background: #f8d7da;
-            color: #721c24;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 20px;
-            border-left: 5px solid #dc3545;
-        }
-        .example {
-            background: #d1ecf1;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 15px;
-            font-size: 14px;
-        }
-        .quick-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-        }
-        .quick-buttons button {
-            padding: 8px 16px;
-            font-size: 14px;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
@@ -109,24 +14,24 @@
             <label for="dataInput">Paste dữ liệu từ bảng chấm công (copy từ web):</label>
             <textarea id="dataInput" placeholder="Paste dữ liệu ở đây...&#10;Ví dụ:&#10;08	CN	W	16:30		22:00	5.50	-	-	-	Đã duyệt&#10;09	T2	W	17:00		22:00	5.00	-	-	-	Đã duyệt&#10;..."></textarea>
             
-            <div style="display: flex; gap: 15px; margin: 15px 0; flex-wrap: wrap;">
+            <div style="display: flex; gap: 34px; margin: 15px 0; align-items: self-end; flex-wrap: wrap;">
                 <div style="flex: 1; min-width: 200px;">
-                    <label for="hourlyRate" style="display: block; margin-bottom: 5px;">💰 Lương theo giờ (VNĐ):</label>
+                    <label for="hourlyRate" style="margin-bottom: 5px;">💰 Lương theo giờ (VNĐ):</label>
                     <input type="number" id="hourlyRate" placeholder="Ví dụ: 50000" 
-                           style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 6px; font-size: 16px; height: 20px; box-sizing: border-box;">
+                           style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 6px; font-size: 16px;">
                 </div>
-                <div style="display: flex; gap: 5px; align-items: center; margin-top: 28px;">
-                    <button onclick="setRate(30000)" style="padding: 10px 12px; font-size: 12px; height: 40px;">30k</button>
-                    <button onclick="setRate(50000)" style="padding: 10px 12px; font-size: 12px; height: 40px;">50k</button>
-                    <button onclick="setRate(80000)" style="padding: 10px 12px; font-size: 12px; height: 40px;">80k</button>
-                    <button onclick="setRate(100000)" style="padding: 10px 12px; font-size: 12px; height: 40px;">100k</button>
+                <div style="display: flex; gap: 7px; padding: 5px 0px">
+                    <button onclick="setRate(25500)" style="padding: 8px 12px; font-size: 12px;">25.5k</button>
+                    <button onclick="setRate(26500)" style="padding: 8px 12px; font-size: 12px;">26.5k</button>
+                    <button onclick="setRate(27500)" style="padding: 8px 12px; font-size: 12px;">27.5k</button>
+                    <button onclick="setRate(28500)" style="padding: 8px 12px; font-size: 12px;">28.5k</button>
                 </div>
             </div>
 
             <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 15px 0;">
                 <label style="display: flex; align-items: center; margin-bottom: 10px; cursor: pointer;">
                     <input type="checkbox" id="calculateNet" onchange="toggleNetSalary()" style="margin-right: 10px; width: 18px; height: 18px; cursor: pointer;">
-                    <strong>📊 Tính lương Net (sau bảo hiểm)</strong>
+                    <p>📊 Tính lương Net (sau bảo hiểm)</p>
                 </label>
                 
                 <div id="netSalaryOptions" style="display: none; margin-top: 15px;">
@@ -189,15 +94,13 @@
                 
                 // Tìm các số thập phân trong mỗi dòng (có thể là giờ làm việc)
                 const hours = [];
-                // Hỗ trợ cả dấu chấm và dấu phẩy
                 const hourPattern = /\b\d+[.,]\d{1,2}\b/g;
                 
                 lines.forEach(line => {
-                    // Thay dấu phẩy thành dấu chấm để xử lý định dạng số của iPhone/EU
-                    const normalizedLine = line.replace(/,/g, '.');
+                    const normalizedLine = line.replace(/,/g, '.'); // Chuẩn hóa dấu phẩy thành dấu chấm
                     const matches = normalizedLine.match(hourPattern);
                     if (matches) {
-                        // Lọc ra những số có thể là giờ làm việc (thường từ 0.5-24)
+                        // Lọc ra những số có thể là giờ làm việc (thường từ 1-24)
                         matches.forEach(match => {
                             const num = parseFloat(match);
                             if (num > 0 && num <= 24) {
@@ -258,9 +161,9 @@
                                     <div style="margin-bottom: 10px; font-weight: bold;">📉 Khấu trừ:</div>
                                     <div style="display: flex; justify-content: space-between; margin: 5px 0; font-size: 14px;">
                                         <span>• Bảo hiểm (BHXH + BHYT + BHTN):</span>
-                                        <span style="color: #ffcccc;">- ${formatMoney(insuranceFee)}</span>
+                                        <span style="color: #ffcccc; font-size: 18px;">- ${formatMoney(insuranceFee)}</span>
                                     </div>
-                                    <div style="font-size: 12px; opacity: 0.8; margin-top: 5px; padding-left: 15px;">
+                                    <div style="font-size: 12px; opacity: 0.8; margin-top: 5px; padding-left: 5px;">
                                         (Tính trên lương cơ bản 4.960.000 VNĐ/tháng)
                                     </div>
                                 </div>
