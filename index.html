@@ -3,252 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Công cụ tính tổng giờ làm việc và lương dự kiến từ bảng chấm công. Paste dữ liệu, nhập lương/giờ, nhận kết quả ngay.">
     <title>Tính tổng giờ làm việc</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <h1>🕐 Tính tổng giờ làm việc</h1>
-        
+        <div class="header">
+            <h1>🕐 Tính tổng giờ làm việc</h1>
+            <button type="button" id="btnTheme" class="theme-toggle" aria-label="Chuyển chế độ tối">🌙</button>
+        </div>
+
         <div class="input-section">
             <label for="dataInput">Paste dữ liệu từ bảng chấm công (copy từ web):</label>
             <textarea id="dataInput" placeholder="Paste dữ liệu ở đây...&#10;Ví dụ:&#10;08	CN	W	16:30		22:00	5.50	-	-	-	Đã duyệt&#10;09	T2	W	17:00		22:00	5.00	-	-	-	Đã duyệt&#10;..."></textarea>
-            
-            <div style="display: flex; gap: 34px; margin: 15px 0; align-items: self-end; flex-wrap: wrap;">
-                <div style="flex: 1; min-width: 200px;">
-                    <label for="hourlyRate" style="margin-bottom: 5px;">💰 Lương theo giờ (VNĐ):</label>
-                    <input type="number" id="hourlyRate" placeholder="Ví dụ: 50000" 
-                           style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 6px; font-size: 16px;">
+
+            <div class="rate-section">
+                <div class="rate-input-wrapper">
+                    <label for="hourlyRate">💰 Lương theo giờ (VNĐ):</label>
+                    <input type="number" id="hourlyRate" class="rate-input" placeholder="Ví dụ: 25000">
                 </div>
-                <div style="display: flex; gap: 7px; padding: 5px 0px">
-                    <button onclick="setRate(25500)" style="padding: 8px 12px; font-size: 12px;">25.5k</button>
-                    <button onclick="setRate(26500)" style="padding: 8px 12px; font-size: 12px;">26.5k</button>
-                    <button onclick="setRate(27500)" style="padding: 8px 12px; font-size: 12px;">27.5k</button>
-                    <button onclick="setRate(28500)" style="padding: 8px 12px; font-size: 12px;">28.5k</button>
+                <div class="rate-buttons">
+                    <button type="button" class="rate-btn" data-rate="25000" aria-label="Đặt lương 25.000 VNĐ/giờ">25k</button>
+                    <button type="button" class="rate-btn" data-rate="26000" aria-label="Đặt lương 26.000 VNĐ/giờ">26k</button>
+                    <button type="button" class="rate-btn" data-rate="27000" aria-label="Đặt lương 27.000 VNĐ/giờ">27k</button>
+                    <button type="button" class="rate-btn" data-rate="28000" aria-label="Đặt lương 28.000 VNĐ/giờ">28k</button>
                 </div>
             </div>
 
-            <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 15px 0;">
-                <label style="display: flex; align-items: center; margin-bottom: 10px; cursor: pointer;">
-                    <input type="checkbox" id="calculateNet" onchange="toggleNetSalary()" style="margin-right: 10px; width: 18px; height: 18px; cursor: pointer;">
-                    <p>📊 Tính lương Net (sau bảo hiểm)</p>
-                </label>
-                
-                <div id="netSalaryOptions" style="display: none; margin-top: 15px;">
-                    <div style="background: #e3f2fd; padding: 12px; border-radius: 6px; margin-bottom: 15px; font-size: 14px;">
-                        <strong>💡 Thông tin:</strong> Bảo hiểm xã hội (BHXH + BHYT + BHTN) = <strong>520.800 VNĐ/tháng</strong> 
-                        (tính trên lương cơ bản 4.960.000 VNĐ)
-                    </div>
-                    
-                    <div>
-                        <label style="display: block; margin-bottom: 5px; font-size: 14px;">🎁 Tiền thưởng Sale (Sale Incentive) - VNĐ:</label>
-                        <input type="number" id="saleIncentive" value="0" placeholder="Nhập số tiền thưởng"
-                               style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 6px; font-size: 16px;">
-                        <div style="margin-top: 8px; font-size: 13px; color: #666;">
-                            💡 Nhập tiền thưởng dự tính từ doanh số bán hàng (nếu có)
-                        </div>
-                    </div>
+            <!-- Tính lương Net tạm thời bị tắt -->
+            <div class="warning-banner">
+                <span class="warning-icon">⚠️</span>
+                <div class="warning-text">
+                    <strong>Lưu ý:</strong> Số tiền lương hiển thị chỉ mang tính chất <strong>tham khảo</strong>, chưa bao gồm các khoản khấu trừ (bảo hiểm, thuế TNCN,...). Vui lòng liên hệ bộ phận nhân sự để biết chính xác lương thực nhận.
                 </div>
             </div>
-            
+
             <div class="quick-buttons">
-                <button onclick="calculateHours()">📊 Tính tổng giờ & lương</button>
-                <button onclick="clearAll()">🗑️ Xóa hết</button>
-                <button onclick="loadExample()">📝 Ví dụ</button>
+                <button type="button" id="btnCalculate">📊 Tính tổng giờ &amp; lương</button>
+                <button type="button" id="btnClear">🗑️ Xóa hết</button>
+                <button type="button" id="btnExample">📝 Ví dụ</button>
             </div>
         </div>
 
         <div class="example">
-            <strong>Hướng dẫn:</strong> 
+            <strong>Hướng dẫn:</strong>
             <br>1. Copy toàn bộ bảng từ trang web và paste vào ô trên
-            <br>2. Nhập mức lương theo giờ (hoặc chọn nút nhanh: 30k, 50k, 80k, 100k)
-            <br>3. (Tùy chọn) Tích chọn "Tính lương Net" và nhập tiền thưởng sale (nếu có)
-            <br>4. Công cụ sẽ tự động tính: Lương Gross - Bảo hiểm (520.800đ) + Thưởng = Lương Net
+            <br>2. Nhập mức lương theo giờ (hoặc chọn nút nhanh)
+            <br>3. Nhấn "Tính tổng giờ &amp; lương" để xem kết quả
         </div>
 
         <div id="result"></div>
     </div>
 
-    <script>
-        function toggleNetSalary() {
-            const checkbox = document.getElementById('calculateNet');
-            const options = document.getElementById('netSalaryOptions');
-            options.style.display = checkbox.checked ? 'block' : 'none';
-        }
-
-        function calculateHours() {
-            const input = document.getElementById('dataInput').value;
-            const hourlyRate = parseFloat(document.getElementById('hourlyRate').value) || 0;
-            const calculateNet = document.getElementById('calculateNet').checked;
-            const saleIncentive = parseFloat(document.getElementById('saleIncentive').value) || 0;
-            const resultDiv = document.getElementById('result');
-            
-            if (!input.trim()) {
-                resultDiv.innerHTML = '<div class="error">Vui lòng paste dữ liệu vào ô trên!</div>';
-                return;
-            }
-            
-            try {
-                // Tách các dòng
-                const lines = input.split('\n').filter(line => line.trim());
-                
-                // Tìm các số thập phân trong mỗi dòng (có thể là giờ làm việc)
-                const hours = [];
-                const hourPattern = /\b\d+[.,]\d{1,2}\b/g;
-                
-                lines.forEach(line => {
-                    const normalizedLine = line.replace(/,/g, '.'); // Chuẩn hóa dấu phẩy thành dấu chấm
-                    const matches = normalizedLine.match(hourPattern);
-                    if (matches) {
-                        // Lọc ra những số có thể là giờ làm việc (thường từ 1-24)
-                        matches.forEach(match => {
-                            const num = parseFloat(match);
-                            if (num > 0 && num <= 24) {
-                                hours.push(num);
-                            }
-                        });
-                    }
-                });
-                
-                if (hours.length === 0) {
-                    resultDiv.innerHTML = '<div class="error">Không tìm thấy dữ liệu giờ làm việc! Vui lòng kiểm tra lại dữ liệu.</div>';
-                    return;
-                }
-                
-                // Tính tổng
-                const total = hours.reduce((sum, hour) => sum + hour, 0);
-                const grossSalary = total * hourlyRate;
-                
-                // Format số tiền
-                const formatMoney = (amount) => {
-                    return new Intl.NumberFormat('vi-VN').format(Math.round(amount)) + ' VNĐ';
-                };
-                
-                // Hiển thị kết quả
-                let salarySection = '';
-                if (hourlyRate > 0) {
-                    if (calculateNet) {
-                        // Bảo hiểm cố định
-                        const insuranceFee = 520800;
-                        
-                        // Lương net = Lương gross - Bảo hiểm + Thưởng sale
-                        const netSalary = grossSalary - insuranceFee + saleIncentive;
-                        
-                        salarySection = `
-                            <div style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 25px; border-radius: 10px; margin: 20px 0;">
-                                <h2 style="margin: 0 0 20px 0; color: white; text-align: center;">💰 CHI TIẾT LƯƠNG</h2>
-                                
-                                <div style="background: rgba(255,255,255,0.15); padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-                                    <div style="display: flex; justify-content: space-between; margin: 8px 0;">
-                                        <span>📊 Lương Gross (theo giờ):</span>
-                                        <strong style="font-size: 18px;">${formatMoney(grossSalary)}</strong>
-                                    </div>
-                                    <div style="font-size: 14px; opacity: 0.8; margin-top: 5px;">
-                                        ${total.toFixed(2)} giờ × ${formatMoney(hourlyRate).replace(' VNĐ', '')} VNĐ/giờ
-                                    </div>
-                                </div>
-                                
-                                ${saleIncentive > 0 ? `
-                                <div style="background: rgba(76, 175, 80, 0.3); padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-                                    <div style="display: flex; justify-content: space-between; margin: 8px 0;">
-                                        <span>🎁 Thưởng Sale (Incentive):</span>
-                                        <strong style="font-size: 18px; color: #90EE90;">+ ${formatMoney(saleIncentive)}</strong>
-                                    </div>
-                                </div>
-                                ` : ''}
-                                
-                                <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-                                    <div style="margin-bottom: 10px; font-weight: bold;">📉 Khấu trừ:</div>
-                                    <div style="display: flex; justify-content: space-between; margin: 5px 0; font-size: 14px;">
-                                        <span>• Bảo hiểm (BHXH + BHYT + BHTN):</span>
-                                        <span style="color: #ffcccc; font-size: 18px;">- ${formatMoney(insuranceFee)}</span>
-                                    </div>
-                                    <div style="font-size: 12px; opacity: 0.8; margin-top: 5px; padding-left: 5px;">
-                                        (Tính trên lương cơ bản 4.960.000 VNĐ/tháng)
-                                    </div>
-                                </div>
-                                
-                                <div style="background: linear-gradient(135deg, #28a745, #20c997); padding: 20px; border-radius: 8px; text-align: center;">
-                                    <div style="font-size: 16px; margin-bottom: 5px;">💵 Lương Net (Thực nhận)</div>
-                                    <div style="font-size: 28px; font-weight: bold;">${formatMoney(netSalary)}</div>
-                                    <div style="font-size: 13px; opacity: 0.9; margin-top: 8px;">
-                                        ${formatMoney(grossSalary)} ${saleIncentive > 0 ? '+ ' + formatMoney(saleIncentive) : ''} - ${formatMoney(insuranceFee)}
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-                    } else {
-                        salarySection = `
-                            <div style="background: linear-gradient(135deg, #28a745, #20c997); color: white; padding: 20px; border-radius: 10px; margin: 20px 0; text-align: center;">
-                                <h2 style="margin: 0 0 10px 0; color: white;">💵 LƯƠNG GROSS</h2>
-                                <div style="font-size: 18px; margin: 10px 0;">
-                                    <strong>${total.toFixed(2)} giờ × ${formatMoney(hourlyRate).replace(' VNĐ', '')} VNĐ/giờ</strong>
-                                </div>
-                                <div style="font-size: 24px; font-weight: bold; background: rgba(255,255,255,0.2); padding: 15px; border-radius: 8px; margin: 15px 0;">
-                                    🎯 Tổng lương: ${formatMoney(grossSalary)}
-                                </div>
-                                <div style="font-size: 14px; opacity: 0.9;">
-                                    Lương trung bình/ngày: ${formatMoney((grossSalary/hours.length))}
-                                </div>
-                            </div>
-                        `;
-                    }
-                }
-                
-                resultDiv.innerHTML = `
-                    <div class="result">
-                        <h3>✅ Kết quả tính toán</h3>
-                        <div class="hours-list">
-                            <strong>Giờ làm việc từng ngày:</strong><br>
-                            ${hours.map((h, i) => `Ngày ${i+1}: ${h} giờ`).join('<br>')}
-                        </div>
-                        <h2 style="color: #28a745; text-align: center; margin: 20px 0;">
-                            🕐 Tổng cộng: <span style="font-size: 1.2em;">${total.toFixed(2)} giờ</span>
-                        </h2>
-                        <p style="text-align: center; color: #666;">
-                            Số ngày làm việc: ${hours.length} ngày<br>
-                            Trung bình: ${(total/hours.length).toFixed(2)} giờ/ngày
-                        </p>
-                        ${salarySection}
-                    </div>
-                `;
-                
-            } catch (error) {
-                resultDiv.innerHTML = '<div class="error">Có lỗi xảy ra khi xử lý dữ liệu. Vui lòng kiểm tra định dạng!</div>';
-            }
-        }
-        
-        function clearAll() {
-            document.getElementById('dataInput').value = '';
-            document.getElementById('hourlyRate').value = '';
-            document.getElementById('saleIncentive').value = '0';
-            document.getElementById('calculateNet').checked = false;
-            document.getElementById('netSalaryOptions').style.display = 'none';
-            document.getElementById('result').innerHTML = '';
-        }
-        
-        function setRate(rate) {
-            document.getElementById('hourlyRate').value = rate;
-        }
-        
-        function loadExample() {
-            const exampleData = `08	CN	W	16:30		22:00	5.50	-	-	-	Đã duyệt
-09	T2	W	17:00		22:00	5.00	-	-	-	Đã duyệt
-10	T3	W	17:30		22:30	5.00	-	-	-	Đã duyệt
-11	T4	W	17:00		22:30	5.50	-	-	-	Đã duyệt
-12	T5	W	17:00		22:00	5.00	-	-	-	Đã duyệt
-13	T6	W	13:00		22:30	9.50	-	-	-	Đã duyệt
-21	T7	W	16:00		22:00	6.00	-	-	-	Đã duyệt
-22	CN	W	10:00		14:00	4.00	-	-	-	Đã duyệt
-23	T2	W	10:15	15:00	18:00	22:00	8.75	-	-	-	Đã duyệt`;
-            
-            document.getElementById('dataInput').value = exampleData;
-        }
-        
-        // Tự động tính khi paste dữ liệu
-        document.getElementById('dataInput').addEventListener('paste', function() {
-            setTimeout(calculateHours, 100);
-        });
-    </script>
+    <script src="app.js"></script>
 </body>
 </html>
