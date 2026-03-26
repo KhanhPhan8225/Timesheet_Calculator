@@ -94,8 +94,11 @@
             const decimalMatches = afterTimeStr.match(/\b\d+\.\d{1,2}\b/g);
             if (!decimalMatches) continue;
 
-            const hoursValue = parseFloat(decimalMatches[0]);
+            let hoursValue = parseFloat(decimalMatches[0]);
             if (isNaN(hoursValue) || hoursValue <= 0 || hoursValue > 24) continue;
+            
+            // Lấy tròn giờ theo tỷ lệ 1/4 (0.25, 0.5, 0.75)
+            hoursValue = Math.round(hoursValue * 4) / 4;
 
             const position = /\b(cook|bếp)\b/i.test(chunk) ? 'Cook' : null;
             const startTime = timeMatches[0];
