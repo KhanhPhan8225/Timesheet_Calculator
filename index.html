@@ -4,24 +4,83 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Công cụ tính tổng giờ làm việc và lương dự kiến từ bảng chấm công. Paste dữ liệu, nhập lương/giờ, nhận kết quả ngay.">
-    <title>Tính tổng giờ làm việc</title>
+    <title>Quản lý Bảng công & Lương</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>🕐 Tính tổng giờ làm việc</h1>
-            <button type="button" id="btnTheme" class="theme-toggle" aria-label="Chuyển chế độ tối">🌙</button>
-        </div>
+    <div class="app-layout">
+        <!-- ── Left Column (Main) ────────────────────── -->
+        <main class="main-col">
+            <!-- Header -->
+            <header class="page-header">
+                <div class="header-text">
+                    <h1>Quản lý Bảng công & Lương</h1>
+                    <p class="subtitle">Theo dõi thời gian làm việc chính xác và tính toán thu nhập hàng tuần với hệ thống kiến trúc kỹ thuật số.</p>
+                </div>
+                <button type="button" id="btnTheme" class="theme-toggle" aria-label="Chuyển chế độ tối">
+                    <svg class="icon icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                    <svg class="icon icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                </button>
+            </header>
 
-        <div class="input-section">
-            <label for="dataInput">Paste dữ liệu từ bảng chấm công (copy từ web):</label>
-            <textarea id="dataInput" placeholder="Paste dữ liệu ở đây...&#10;Ví dụ:&#10;08	CN	W	16:30		22:00	5.50	-	-	-	Đã duyệt&#10;09	T2	W	17:00		22:00	5.00	-	-	-	Đã duyệt&#10;..."></textarea>
+            <!-- Input Card -->
+            <section class="card input-card">
+                <div class="card-header">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+                    <h2>Nhập bảng công nhanh</h2>
+                    <span class="badge">Hỗ trợ định dạng: JSON, CSV hoặc Văn bản thô</span>
+                </div>
+                <label for="dataInput" class="sr-only">Paste dữ liệu bảng chấm công</label>
+                <textarea id="dataInput" placeholder="Dán dữ liệu bảng công tại đây... (Ví dụ: 2024-05-20, 08:00, 17:30)"></textarea>
 
-            <div class="rate-section">
-                <div class="rate-input-wrapper">
-                    <label for="hourlyRate">💰 Lương theo giờ (VNĐ):</label>
+                <!-- Warning Banner -->
+                <div class="warning-banner">
+                    <svg class="icon icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                    <div class="warning-text">
+                        <strong>Lưu ý:</strong> Số tiền lương hiển thị chỉ mang tính chất <strong>tham khảo</strong>, chưa bao gồm các khoản khấu trừ (bảo hiểm, thuế TNCN,...). Vui lòng liên hệ bộ phận nhân sự để biết chính xác lương thực nhận.
+                    </div>
+                </div>
+
+                <div class="action-bar">
+                    <button type="button" id="btnCalculate" class="btn btn-primary">
+                        <svg class="icon icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                        Phân tích dữ liệu
+                    </button>
+                    <button type="button" id="btnExample" class="btn btn-outline">
+                        <svg class="icon icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                        Ví dụ
+                    </button>
+                    <button type="button" id="btnClear" class="btn btn-ghost">
+                        <svg class="icon icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                        Xóa hết
+                    </button>
+                </div>
+            </section>
+
+            <!-- Result Area -->
+            <div id="result"></div>
+
+            <!-- Instructions -->
+            <section class="card instructions-card">
+                <h3>Hướng dẫn sử dụng</h3>
+                <ol>
+                    <li>Copy toàn bộ bảng từ trang web và paste vào ô trên</li>
+                    <li>Nhập mức lương theo giờ (hoặc chọn nút nhanh bên phải)</li>
+                    <li>Nhấn <strong>"Phân tích dữ liệu"</strong> để xem kết quả</li>
+                </ol>
+            </section>
+        </main>
+
+        <!-- ── Right Column (Sidebar) ────────────────── -->
+        <aside class="sidebar-col">
+            <!-- Rate Card -->
+            <section class="card rate-card">
+                <label for="hourlyRate" class="rate-label">HOURLY RATE (VNĐ/GIỜ)</label>
+                <div class="rate-input-group">
                     <input type="number" id="hourlyRate" class="rate-input" placeholder="Ví dụ: 25000">
+                    <button type="button" class="btn-icon" aria-label="Lưu mức lương" id="btnSaveRate">
+                        <svg class="icon icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                    </button>
                 </div>
                 <div class="rate-buttons">
                     <button type="button" class="rate-btn" data-rate="25000" aria-label="Đặt lương 25.000 VNĐ/giờ">25k</button>
@@ -29,31 +88,14 @@
                     <button type="button" class="rate-btn" data-rate="27000" aria-label="Đặt lương 27.000 VNĐ/giờ">27k</button>
                     <button type="button" class="rate-btn" data-rate="28000" aria-label="Đặt lương 28.000 VNĐ/giờ">28k</button>
                 </div>
-            </div>
+            </section>
 
-            <!-- Tính lương Net tạm thời bị tắt -->
-            <div class="warning-banner">
-                <span class="warning-icon">⚠️</span>
-                <div class="warning-text">
-                    <strong>Lưu ý:</strong> Số tiền lương hiển thị chỉ mang tính chất <strong>tham khảo</strong>, chưa bao gồm các khoản khấu trừ (bảo hiểm, thuế TNCN,...). Vui lòng liên hệ bộ phận nhân sự để biết chính xác lương thực nhận.
-                </div>
-            </div>
+            <!-- Summary Card (dynamic) -->
+            <div id="summary-card"></div>
 
-            <div class="quick-buttons">
-                <button type="button" id="btnCalculate">📊 Tính tổng giờ &amp; lương</button>
-                <button type="button" id="btnClear">🗑️ Xóa hết</button>
-                <button type="button" id="btnExample">📝 Ví dụ</button>
-            </div>
-        </div>
-
-        <div class="example">
-            <strong>Hướng dẫn:</strong>
-            <br>1. Copy toàn bộ bảng từ trang web và paste vào ô trên
-            <br>2. Nhập mức lương theo giờ (hoặc chọn nút nhanh)
-            <br>3. Nhấn "Tính tổng giờ &amp; lương" để xem kết quả
-        </div>
-
-        <div id="result"></div>
+            <!-- Recalculate button -->
+            <div id="recalc-area"></div>
+        </aside>
     </div>
 
     <script src="app.js"></script>

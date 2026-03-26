@@ -6,6 +6,8 @@
     const dataInput = $('#dataInput');
     const hourlyRateInput = $('#hourlyRate');
     const resultDiv = $('#result');
+    const summaryDiv = $('#summary-card');
+    const recalcDiv = $('#recalc-area');
     const rateBtns = document.querySelectorAll('.rate-btn');
 
     // ── LocalStorage keys ────────────────────────────
@@ -20,7 +22,6 @@
         } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
             document.documentElement.setAttribute('data-theme', 'dark');
         }
-        updateThemeIcon();
     }
 
     function toggleDarkMode() {
@@ -28,15 +29,6 @@
         const next = current === 'dark' ? 'light' : 'dark';
         document.documentElement.setAttribute('data-theme', next);
         localStorage.setItem(STORAGE_THEME, next);
-        updateThemeIcon();
-    }
-
-    function updateThemeIcon() {
-        const btn = $('#btnTheme');
-        if (!btn) return;
-        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-        btn.textContent = isDark ? '☀️' : '🌙';
-        btn.setAttribute('aria-label', isDark ? 'Chuyển sang chế độ sáng' : 'Chuyển sang chế độ tối');
     }
 
     // ── LocalStorage: Rate ───────────────────────────
@@ -69,16 +61,13 @@
 
     // ── Parsing (handles multiline cell pastes correctly) ──────
     function parseEntries(raw) {
-        // Normalize entire input: clean up tabs, multiple spaces, keep it all as one string
-        // so we don't rely on newlines (which get broken during copy/paste from tables)
         const normalized = raw.replace(/,/g, '.').replace(/\s+/g, ' ');
         const entries = [];
-        
-        // Find all "Ngày Thứ" markers. e.g., "01 CN", "02 T2"
+
         const dayRegex = /\b(\d{1,2})\s+(CN|T[2-7])\b/g;
         let dayMatch;
         const dayIndices = [];
-        
+
         while ((dayMatch = dayRegex.exec(normalized)) !== null) {
             dayIndices.push({
                 index: dayMatch.index,
@@ -86,44 +75,36 @@
                 dayName: dayMatch[2]
             });
         }
-        
-        // If no days found, might be an empty or invalid paste
+
         if (dayIndices.length === 0) return entries;
-        
-        // Process each chunk (from one "Ngày" to the next)
+
         for (let i = 0; i < dayIndices.length; i++) {
             const current = dayIndices[i];
             const nextIndex = i + 1 < dayIndices.length ? dayIndices[i + 1].index : normalized.length;
-            
-            // The text block belonging to this specific day
             const chunk = normalized.substring(current.index, nextIndex);
-            
-            // Look for times (HH:MM). There are usually 3 to 4 times (Từ, Nghỉ(opt), Vào, Đến)
+
             const timeMatches = chunk.match(/\b\d{1,2}:\d{2}\b/g);
             if (!timeMatches || timeMatches.length === 0) continue;
-            
-            const endTime = timeMatches[timeMatches.length - 1]; // Last time is "Đến" (End Time)
+
+            const endTime = timeMatches[timeMatches.length - 1];
             const parts = endTime.split(':');
             const endHour = parseInt(parts[0], 10);
-            
-            // Get text *after* the last time to find the "Tổng giờ làm" and "Vị trí"
+
             const afterTimeStr = chunk.substring(chunk.lastIndexOf(endTime) + endTime.length);
-            
-            // Decimal numbers list: Tổng, Đêm, TổngOT, ĐêmOT, Ngày công
             const decimalMatches = afterTimeStr.match(/\b\d+\.\d{1,2}\b/g);
             if (!decimalMatches) continue;
-            
-            // The first decimal after all the times is the "Tổng giờ làm"
+
             const hoursValue = parseFloat(decimalMatches[0]);
             if (isNaN(hoursValue) || hoursValue <= 0 || hoursValue > 24) continue;
-            
-            // Look for Cook/Bếp anywhere in the chunk
+
             const position = /\b(cook|bếp)\b/i.test(chunk) ? 'Cook' : null;
-            
+            const startTime = timeMatches[0];
+
             entries.push({
                 day: current.dayNum,
                 dayName: current.dayName,
                 hours: hoursValue,
+                startTime: startTime,
                 endTime: endTime,
                 endHour: endHour,
                 position: position,
@@ -134,104 +115,169 @@
         return entries;
     }
 
+    // ── Day name mapping ─────────────────────────────
+    const DAY_NAMES = {
+        'CN': 'Chủ Nhật',
+        'T2': 'Thứ Hai',
+        'T3': 'Thứ Ba',
+        'T4': 'Thứ Tư',
+        'T5': 'Thứ Năm',
+        'T6': 'Thứ Sáu',
+        'T7': 'Thứ Bảy',
+    };
+
+    function formatTime(t) {
+        const [h, m] = t.split(':');
+        const hour = parseInt(h, 10);
+        const ampm = hour >= 12 ? 'PM' : 'AM';
+        const h12 = hour % 12 || 12;
+        return `${String(h12).padStart(2, '0')}:${m} ${ampm}`;
+    }
+
     // ── Money formatter ───────────────────────────────
     function formatMoney(amount) {
         return new Intl.NumberFormat('vi-VN').format(Math.round(amount)) + ' VNĐ';
     }
 
+    function formatMoneyShort(amount) {
+        return new Intl.NumberFormat('vi-VN').format(Math.round(amount));
+    }
+
+    // ── Build detail table rows ──────────────────────
+    function buildTableHTML(entries) {
+        const rows = entries.map((e) => {
+            const dayFull = DAY_NAMES[e.dayName] || e.dayName;
+            const cookTag = e.isCookClosing
+                ? '<span class="cook-tag">Cook</span>'
+                : '';
+            return `<tr>
+                <td class="day-name">${dayFull} (${e.day}/${new Date().getMonth() + 1 < 10 ? '0' : ''}${new Date().getMonth() + 1})${cookTag}</td>
+                <td>${formatTime(e.startTime)}</td>
+                <td>${formatTime(e.endTime)}</td>
+                <td class="hours-value">${e.hours.toFixed(1)}</td>
+            </tr>`;
+        }).join('');
+
+        return `<table class="detail-table">
+            <thead>
+                <tr>
+                    <th>Ngày trong tuần</th>
+                    <th>Bắt đầu</th>
+                    <th>Kết thúc</th>
+                    <th style="text-align:right">Số giờ</th>
+                </tr>
+            </thead>
+            <tbody>${rows}</tbody>
+        </table>`;
+    }
+
     // ── Build bar chart HTML ──────────────────────────
     function buildChartHTML(entries) {
         const maxHours = Math.max(...entries.map((e) => e.hours));
+        const bars = entries.map((entry, i) => {
+            const pct = (entry.hours / maxHours) * 100;
+            const label = entry.label || `Ngày ${i + 1}`;
+            let colorClass = 'chart-fill--green';
+            if (entry.hours >= 8) colorClass = 'chart-fill--red';
+            else if (entry.hours >= 6) colorClass = 'chart-fill--orange';
 
-        const bars = entries
-            .map((entry, i) => {
-                const pct = (entry.hours / maxHours) * 100;
-                const label = entry.label || `Ngày ${i + 1}`;
-                let colorClass = 'chart-fill--green';
-                if (entry.hours >= 8) colorClass = 'chart-fill--red';
-                else if (entry.hours >= 6) colorClass = 'chart-fill--orange';
-
-                return `
-                <div class="chart-row">
-                    <span class="chart-label">${label}</span>
-                    <div class="chart-bar">
-                        <div class="chart-fill ${colorClass}" style="--fill-width: ${pct}%; animation-delay: ${i * 0.06}s">
-                            <span class="chart-value">${entry.hours}h</span>
-                        </div>
+            return `<div class="chart-row">
+                <span class="chart-label">${label}</span>
+                <div class="chart-bar">
+                    <div class="chart-fill ${colorClass}" style="--fill-width: ${pct}%; animation-delay: ${i * 0.06}s">
+                        <span class="chart-value">${entry.hours}h</span>
                     </div>
-                </div>`;
-            })
-            .join('');
-
-        return `
-            <div class="chart-section">
-                <h3 class="chart-title">📊 Biểu đồ giờ làm việc</h3>
-                ${bars}
-                <div class="chart-legend">
-                    <span class="legend-item"><span class="legend-dot legend-dot--green"></span> &lt; 6h</span>
-                    <span class="legend-item"><span class="legend-dot legend-dot--orange"></span> 6-8h</span>
-                    <span class="legend-item"><span class="legend-dot legend-dot--red"></span> &gt; 8h</span>
                 </div>
             </div>`;
+        }).join('');
+
+        return `<div class="chart-section">
+            <h3 class="chart-title">Biểu đồ giờ làm việc</h3>
+            ${bars}
+            <div class="chart-legend">
+                <span class="legend-item"><span class="legend-dot legend-dot--green"></span> &lt; 6h</span>
+                <span class="legend-item"><span class="legend-dot legend-dot--orange"></span> 6-8h</span>
+                <span class="legend-item"><span class="legend-dot legend-dot--red"></span> &gt; 8h</span>
+            </div>
+        </div>`;
     }
 
-    // ── Build salary HTML ─────────────────────────────
-    function buildSalaryHTML(total, hourlyRate, entryCount, cookBonus) {
-        if (hourlyRate <= 0) return '';
-
-        const gross = total * hourlyRate;
+    // ── Build sidebar summary HTML ───────────────────
+    function buildSummaryHTML(total, hourlyRate, entryCount, cookBonus) {
+        const gross = hourlyRate > 0 ? total * hourlyRate : 0;
         const totalWithBonus = gross + cookBonus;
-        const avgPerDay = totalWithBonus / entryCount;
 
-        const cookBonusHTML = cookBonus > 0
-            ? `<div class="salary-detail cook-bonus">
-                    🍳 Thưởng đóng ca Cook: <strong>+${formatMoney(cookBonus)}</strong>
-               </div>`
-            : '';
+        const salarySection = hourlyRate > 0 ? `
+            <div class="summary-salary-label">Mức lương tạm tính</div>
+            <div class="summary-salary-value">${formatMoneyShort(gross)} <span class="summary-total-currency">VNĐ</span></div>
+            ${cookBonus > 0 ? `
+            <div class="summary-extras">
+                <div class="summary-extra-row">
+                    <span>Thưởng đóng ca Cook</span>
+                    <span class="summary-extra-value">+ ${formatMoneyShort(cookBonus)}</span>
+                </div>
+            </div>` : ''}
+            <div class="summary-total-section">
+                <div class="summary-total-label">THỰC NHẬN (TỔNG)</div>
+                <div class="summary-total-value">${formatMoneyShort(totalWithBonus)} <span class="summary-total-currency">VNĐ</span></div>
+            </div>
+            <div class="salary-disclaimer">Số tiền trên chỉ mang tính chất tham khảo, chưa bao gồm khấu trừ bảo hiểm, thuế,...</div>
+        ` : '';
 
-        return `
-            <div class="salary-card">
-                <h2 class="salary-title">💵 LƯƠNG DỰ KIẾN (THAM KHẢO)</h2>
-                <div class="salary-detail">
-                    <strong>${total.toFixed(2)} giờ × ${formatMoney(hourlyRate).replace(' VNĐ', '')} VNĐ/giờ = ${formatMoney(gross)}</strong>
+        return `<div class="summary-card">
+            <div class="summary-label">TỔNG HỢP KẾT QUẢ</div>
+            <div>
+                <span class="summary-label" style="margin-bottom:0">Tổng số giờ làm việc</span>
+                <div class="summary-value">${total.toFixed(1)} <span class="summary-unit">Giờ</span></div>
+            </div>
+            ${salarySection}
+        </div>`;
+    }
+
+    // ── Build recalculate button ─────────────────────
+    function buildRecalcHTML() {
+        return `<div class="recalc-card">
+            <button type="button" class="btn-cta" id="btnRecalc">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                <div>
+                    <span>Tính toán lại</span>
+                    <span class="btn-sub">CẬP NHẬT DỮ LIỆU MỚI NHẤT</span>
                 </div>
-                ${cookBonusHTML}
-                <div class="salary-total">🎯 Tổng lương: ${formatMoney(totalWithBonus)}</div>
-                <div class="salary-avg">Lương trung bình/ngày: ${formatMoney(avgPerDay)}</div>
-                <div class="salary-disclaimer">
-                    ⚠️ Số tiền trên chỉ mang tính chất tham khảo, chưa bao gồm khấu trừ bảo hiểm, thuế,...
-                </div>
-            </div>`;
+            </button>
+        </div>`;
     }
 
     // ── Build result HTML ─────────────────────────────
-    function buildResultHTML(entries, total, salaryHTML, chartHTML) {
-        const daysList = entries
-            .map((e, i) => {
-                const label = e.label || `Ngày ${i + 1}`;
-                const cookTag = e.isCookClosing ? ' 🍳' : '';
-                return `${label}: ${e.hours} giờ${cookTag}`;
-            })
-            .join('<br>');
+    function buildResultHTML(entries, total) {
         const avg = (total / entries.length).toFixed(2);
+        const tableHTML = buildTableHTML(entries);
+        const chartHTML = buildChartHTML(entries);
 
-        return `
-            <div class="result">
-                <h3>✅ Kết quả tính toán</h3>
-                <div class="hours-list">
-                    <strong>Giờ làm việc từng ngày:</strong><br>
-                    ${daysList}
-                </div>
-                <h2 class="total-hours">
-                    🕐 Tổng cộng: <span>${total.toFixed(2)} giờ</span>
+        return `<section class="card result-card">
+            <div class="result-card-header">
+                <h2>
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    Chi tiết thời gian làm việc (Tuần này)
                 </h2>
-                <p class="stats">
-                    Số ngày làm việc: ${entries.length} ngày<br>
-                    Trung bình: ${avg} giờ/ngày
-                </p>
-                ${chartHTML}
-                ${salaryHTML}
-            </div>`;
+                <span class="status-badge"><span class="status-dot"></span> Hệ thống đang chạy</span>
+            </div>
+            ${tableHTML}
+            <div class="stats-row">
+                <div class="stat-item">
+                    <div class="stat-value">${entries.length}</div>
+                    <div class="stat-label">Ngày làm việc</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">${total.toFixed(1)}h</div>
+                    <div class="stat-label">Tổng giờ</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">${avg}h</div>
+                    <div class="stat-label">Trung bình/ngày</div>
+                </div>
+            </div>
+            ${chartHTML}
+        </section>`;
     }
 
     // ── Main calculation ──────────────────────────────
@@ -241,6 +287,8 @@
 
         if (!input.trim()) {
             resultDiv.innerHTML = '<div class="error">Vui lòng paste dữ liệu vào ô trên!</div>';
+            summaryDiv.innerHTML = '';
+            recalcDiv.innerHTML = '';
             return;
         }
 
@@ -249,6 +297,8 @@
 
             if (entries.length === 0) {
                 resultDiv.innerHTML = '<div class="error">Không tìm thấy dữ liệu giờ làm việc! Vui lòng kiểm tra lại dữ liệu.</div>';
+                summaryDiv.innerHTML = '';
+                recalcDiv.innerHTML = '';
                 return;
             }
 
@@ -262,14 +312,20 @@
             const cookBonus = cookClosingDays * 15000;
 
             const total = entries.reduce((sum, e) => sum + e.hours, 0);
-            const chartHTML = buildChartHTML(entries);
-            const salaryHTML = buildSalaryHTML(total, hourlyRate, entries.length, cookBonus);
 
-            resultDiv.innerHTML = buildResultHTML(entries, total, salaryHTML, chartHTML);
+            resultDiv.innerHTML = buildResultHTML(entries, total);
+            summaryDiv.innerHTML = buildSummaryHTML(total, hourlyRate, entries.length, cookBonus);
+            recalcDiv.innerHTML = buildRecalcHTML();
+
+            // Bind recalc button
+            const recalcBtn = $('#btnRecalc');
+            if (recalcBtn) recalcBtn.addEventListener('click', calculateHours);
 
             resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         } catch {
             resultDiv.innerHTML = '<div class="error">Có lỗi xảy ra khi xử lý dữ liệu. Vui lòng kiểm tra định dạng!</div>';
+            summaryDiv.innerHTML = '';
+            recalcDiv.innerHTML = '';
         }
     }
 
@@ -278,6 +334,8 @@
         dataInput.value = '';
         hourlyRateInput.value = '';
         resultDiv.innerHTML = '';
+        summaryDiv.innerHTML = '';
+        recalcDiv.innerHTML = '';
         rateBtns.forEach((btn) => btn.classList.remove('active'));
         localStorage.removeItem(STORAGE_RATE);
     }
