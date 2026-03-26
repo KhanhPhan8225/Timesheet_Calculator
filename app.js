@@ -154,7 +154,7 @@
                 <td class="day-name">${dayFull} (${e.day}/${new Date().getMonth() + 1 < 10 ? '0' : ''}${new Date().getMonth() + 1})${cookTag}</td>
                 <td>${formatTime(e.startTime)}</td>
                 <td>${formatTime(e.endTime)}</td>
-                <td class="hours-value">${e.hours.toFixed(1)}</td>
+                <td class="hours-value">${e.hours}</td>
             </tr>`;
         }).join('');
 
@@ -228,7 +228,7 @@
             <div class="summary-label">TỔNG HỢP KẾT QUẢ</div>
             <div>
                 <span class="summary-label" style="margin-bottom:0">Tổng số giờ làm việc</span>
-                <div class="summary-value">${total.toFixed(1)} <span class="summary-unit">Giờ</span></div>
+                <div class="summary-value">${total} <span class="summary-unit">Giờ</span></div>
             </div>
             ${salarySection}
         </div>`;
@@ -268,7 +268,7 @@
                     <div class="stat-label">Ngày làm việc</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-value">${total.toFixed(1)}h</div>
+                    <div class="stat-value">${total}h</div>
                     <div class="stat-label">Tổng giờ</div>
                 </div>
                 <div class="stat-item">
