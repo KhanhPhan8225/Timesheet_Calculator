@@ -128,10 +128,7 @@
 
     function formatTime(t) {
         const [h, m] = t.split(':');
-        const hour = parseInt(h, 10);
-        const ampm = hour >= 12 ? 'PM' : 'AM';
-        const h12 = hour % 12 || 12;
-        return `${String(h12).padStart(2, '0')}:${m} ${ampm}`;
+        return `${String(parseInt(h, 10)).padStart(2, '0')}:${m}`;
     }
 
     // ── Money formatter ───────────────────────────────
