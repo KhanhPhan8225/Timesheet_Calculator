@@ -25,35 +25,78 @@
 
             <!-- Input Card -->
             <section class="card input-card">
-                <div class="card-header">
-                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
-                    <h2>Nhập bảng công nhanh</h2>
-                    <span class="badge">Hỗ trợ định dạng: JSON, CSV hoặc Văn bản thô</span>
+                <div class="card-header" style="justify-content: space-between;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+                        <h2>Dữ liệu Bảng công</h2>
+                    </div>
+                    <div class="input-tabs">
+                        <button type="button" class="tab-btn active" data-tab="manual">Nhập thủ công</button>
+                        <button type="button" class="tab-btn" data-tab="auto">Lấy tự động</button>
+                    </div>
                 </div>
-                <label for="dataInput" class="sr-only">Paste dữ liệu bảng chấm công</label>
-                <textarea id="dataInput" placeholder="Dán dữ liệu bảng công tại đây... (Ví dụ: 2024-05-20, 08:00, 17:30)"></textarea>
-
-                <!-- Warning Banner -->
-                <div class="warning-banner">
-                    <svg class="icon icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-                    <div class="warning-text">
-                        <strong>Lưu ý:</strong> Số tiền lương hiển thị chỉ mang tính chất <strong>tham khảo</strong>, chưa bao gồm các khoản khấu trừ (bảo hiểm, thuế TNCN,...). Vui lòng liên hệ bộ phận nhân sự để biết chính xác lương thực nhận.
+                
+                <!-- Manual Tab -->
+                <div id="tab-manual" class="tab-content active">
+                    <label for="dataInput" class="sr-only">Paste dữ liệu bảng chấm công</label>
+                    <textarea id="dataInput" placeholder="Dán dữ liệu bảng công tại đây... (Ví dụ: 2024-05-20, 08:00, 17:30)"></textarea>
+                    
+                    <div class="action-bar">
+                        <button type="button" id="btnCalculate" class="btn btn-primary">
+                            <svg class="icon icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                            Phân tích dữ liệu
+                        </button>
+                        <button type="button" id="btnExample" class="btn btn-outline">Ví dụ</button>
+                        <button type="button" id="btnClear" class="btn btn-ghost">Xóa hết</button>
                     </div>
                 </div>
 
-                <div class="action-bar">
-                    <button type="button" id="btnCalculate" class="btn btn-primary">
-                        <svg class="icon icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-                        Phân tích dữ liệu
-                    </button>
-                    <button type="button" id="btnExample" class="btn btn-outline">
-                        <svg class="icon icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-                        Ví dụ
-                    </button>
-                    <button type="button" id="btnClear" class="btn btn-ghost">
-                        <svg class="icon icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-                        Xóa hết
-                    </button>
+                <!-- Auto Tab -->
+                <div id="tab-auto" class="tab-content" style="display: none;">
+                    
+                    <!-- Saved Accounts UI -->
+                    <div id="savedAccounts" class="saved-accounts-container" style="display: none;">
+                        <span class="saved-label">Tài khoản có sẵn:</span>
+                        <div class="saved-chips" id="savedChipsContainer">
+                            <!-- Chips injected via JS -->
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="hrUsername" class="input-label">Mã Nhân Viên</label>
+                        <input type="text" id="hrUsername" class="bot-input" placeholder="Ví dụ: 123456" />
+                    </div>
+                    <div class="form-group" style="margin-top: 12px;">
+                        <label for="hrPassword" class="input-label">Mật Khẩu HR</label>
+                        <input type="password" id="hrPassword" class="bot-input" placeholder="Nhập mật khẩu" />
+                    </div>
+                    
+                    <div class="form-group" style="margin-top: 14px; flex-direction: row; align-items: center; gap: 8px;">
+                        <input type="checkbox" id="saveAccountCheck" checked style="width: 16px; height: 16px; accent-color: var(--primary); cursor: pointer;" />
+                        <label for="saveAccountCheck" class="input-label" style="cursor: pointer; margin: 0; user-select: none;">Nhớ tài khoản cho lần sau</label>
+                    </div>
+
+                    <div class="action-bar" style="margin-top: 18px;">
+                        <button type="button" id="btnAutoFetch" class="btn btn-primary">
+                            <svg class="icon icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                            Bắt đầu đồng bộ
+                        </button>
+                    </div>
+                    
+                    <!-- Loading state -->
+                    <div id="loadingState" class="loading-state" style="display:none; margin-top: 15px; text-align: center; color: var(--primary-color);">
+                        <svg class="spinner icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="animation: spin 1s linear infinite;"><line x1="12" y1="2" x2="12" y2="6"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"/><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="6" y2="12"/><line x1="18" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"/><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"/></svg>
+                        Đang kết nối tới KFC HR... Vui lòng đợi (5-10s)
+                    </div>
+                    <div id="botError" class="error-state" style="display:none; margin-top: 15px; color: var(--danger-color); text-align: center;"></div>
+                </div>
+
+                <!-- Warning Banner -->
+                <div class="warning-banner" style="margin-top: 20px;">
+                    <svg class="icon icon-sm viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                    <div class="warning-text">
+                        <strong>Lưu ý:</strong> Số tiền lương hiển thị chỉ mang tính chất <strong>tham khảo</strong>.
+                    </div>
                 </div>
             </section>
 

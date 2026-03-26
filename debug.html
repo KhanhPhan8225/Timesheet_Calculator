@@ -1,0 +1,664 @@
+<!DOCTYPE html><html lang="en" style="--app-height: 720px; --app-width: 1280px; --blazor-load-percentage: 100%; --blazor-load-percentage-text: &quot;100%&quot;;"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <base href="/">
+    <link href="scss/main.css?ver=287" rel="stylesheet">
+    <link href="scss/croppie.css" rel="stylesheet">
+    <link href="css/goal-form-popup.css?ver=1" rel="stylesheet">
+    <link rel="icon" type="image/png" href="../../svgs/kfc-logo.svg">
+<link rel="modulepreload" href="_framework/dotnet.js" crossorigin="anonymous" integrity="sha256-eaJTmow4t8eE7FZMZR5Ja41JMOefGCbIYDTdpclGsac="><!--!--><title>KFC VietNam | HRS</title><!--!--><!--!--></head>
+
+<body>
+    <div id="app"><!--!--><!--!--><!--!--><!--!--><!--!--><!--!--><!--!--><!--!--><header class="light-theme"><!--!--><div class="menu-logo"></div>
+    
+    <div class="menu menu-hoz"><div class="menu-item menu-active">Bảng công</div><div class="menu-item ">Đăng ký giờ làm</div><div class="menu-item ">Thông tin</div><div class="menu-item ">Phiếu lương</div><div class="menu-item ">PA - Tháng</div><div class="menu-item ">PA - Năm</div><div class="menu-item ">Quá trình làm việc</div></div><!--!-->
+
+    <div class="user-menu" tabindex="999"><div class="popup"><div class="popup-body"><div class="row-center my"><label class="row-center"><input type="checkbox" style=""><!--!-->
+                        <!--!--><span class="ml">Dark theme</span></label></div><!--!-->
+                <div class="user-info"><div class="user-name">Phan Quốc Khánh</div><!--!-->
+                    <div class="user-title">Crew</div></div><!--!-->
+                <hr>
+                <div class="buttons-row"><button class="btn-forgot">Change password</button><!--!-->
+                    <button class="btn-send">Log out</button></div></div></div><!--!-->
+
+        <div class="user-info"><div class="user-name">Phan Quốc Khánh</div><!--!-->
+            <div class="user-title">Crew</div></div></div></header><!--!-->
+
+<!--!--><!--!--><div class="main light-theme"><!--!--><!--!--><div class="card monthly-shifts-res"><div class="card-title"><!--!--><div class="month-selector " style=""><!--!--><div class="month-selector-label">Tháng</div>
+    <div class="month-selector-field"><div class="month-selector-prev"></div><!--!-->
+        <div class="month-selector-text"><input type="number" min="1" max="12" inputmode="numeric" style=""><!--!-->
+            <!--!--><div>/</div>
+            <input type="number" min="2020" max="2080" inputmode="numeric" style=""></div><!--!-->
+        <div class="month-selector-next"></div></div></div><!--!-->
+        <!--!--><div class="employee-block"><div class="employee-info"><div class="employee-name">Phan Quốc Khánh</div></div><!--!-->
+        <div class="employee-info sub-info"><div class="employee-code">2409573</div><!--!-->
+            <div class="employee-title">Crew</div></div></div><!--!-->    
+        <!--!--></div><!--!-->
+    <div class="card-body"><div class="timesheet"><!--!--><div class="timesheet-header"><div class="shift-block"><div class="shift-info"><div class="shift-type">Ngày</div>
+                        <div class="shift-type">Thứ</div>
+                        <div class="shift-work-times"><div class="shift-title"><div class="shift-cell-group">Thời gian làm việc</div></div>
+                            <div class="shift-title"><div class="shift-type">Ca</div>
+                                <div class="shift-cell">Từ</div>
+                                <div class="shift-cell">Nghỉ</div>
+                                <div class="shift-cell">Vào</div>
+                                <div class="shift-cell">Đến</div></div></div>
+                        <div class="shift-work-hours"><div class="shift-title"><div class="shift-cell-group">Giờ làm</div></div>
+                            <div class="shift-title"><div class="shift-cell">Tổng</div>
+                                <div class="shift-cell">Đêm</div></div></div>
+                        <div class="shift-work-hours"><div class="shift-title"><div class="shift-cell-group">Tăng ca</div></div>
+                            <div class="shift-title"><div class="shift-cell">Tổng</div>
+                                <div class="shift-cell">Đêm</div></div></div>
+                        <div class="shift-type">
+                            Ngày công
+                        </div>
+                        <div class="shift-type" style="width: 120px;">
+                            Trạng thái
+                        </div>
+                        <div class="shift-type" style="width: 60px;">
+                            Định hướng
+                        </div>
+                        <div class="shift-type" style="width: 150px;">
+                            Loại công
+                        </div>
+                        <div class="shift-type" style="width: 150px;">
+                            Vị trí
+                        </div>
+                        <div class="shift-type" style="width: 150px;">
+                            CT/NH
+                        </div>
+                        <div class="shift-type" style="width: 90px;">
+                            Xếp lịch
+                        </div>
+                        <div class="shift-type" style="width: 300px;">
+                            Ghi chú
+                        </div></div></div></div>
+            <div class="timesheet-body"><div class="timesheet-row"><div class="shift-block"><div class="shift-info"><div class="shift-type">01</div><!--!-->
+                                <div class="shift-type">CN</div><!--!-->
+                                <div class="shift-type">W</div><!--!-->
+                                <div class="shift-time">10:00</div><!--!-->
+                                <div class="shift-time">14:00</div><!--!-->
+                                <div class="shift-time">18:00</div><!--!-->
+                                <div class="shift-time">22:00</div><!--!-->
+                                <div class="shift-hour">8.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">1.00</div><!--!-->
+                                <div class="shift-type item-status-2" style="width: 120px; padding: 0 4px; align-content: center; justify-content: flex-start;">Đã duyệt</div><!--!-->
+                                <div class="shift-type" style="width: 60px; padding: 0 4px; align-content: center; justify-content: flex-start;">Pass</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">Parttime - PA1</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">Crew</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">083-HNYP</div><!--!-->
+                                <div class="shift-type" style="width: 90px; padding: 0 4px; align-content: center; justify-content: flex-start;">Lobby</div><!--!-->
+                                <div class="shift-type" style="width: 300px; padding: 0 4px; align-content: center; justify-content: flex-start;"></div></div></div></div><div class="timesheet-row"><div class="shift-block"><div class="shift-info"><div class="shift-type">02</div><!--!-->
+                                <div class="shift-type">T2</div><!--!-->
+                                <div class="shift-type">W</div><!--!-->
+                                <div class="shift-time">13:00</div><!--!-->
+                                <div class="shift-time"></div><!--!-->
+                                <div class="shift-time"></div><!--!-->
+                                <div class="shift-time">18:00</div><!--!-->
+                                <div class="shift-hour">5.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.50</div><!--!-->
+                                <div class="shift-type item-status-2" style="width: 120px; padding: 0 4px; align-content: center; justify-content: flex-start;">Đã duyệt</div><!--!-->
+                                <div class="shift-type" style="width: 60px; padding: 0 4px; align-content: center; justify-content: flex-start;">Pass</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">Parttime - PA1</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">Crew</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">083-HNYP</div><!--!-->
+                                <div class="shift-type" style="width: 90px; padding: 0 4px; align-content: center; justify-content: flex-start;">Cook</div><!--!-->
+                                <div class="shift-type" style="width: 300px; padding: 0 4px; align-content: center; justify-content: flex-start;"></div></div></div></div><div class="timesheet-row"><div class="shift-block"><div class="shift-info"><div class="shift-type">03</div><!--!-->
+                                <div class="shift-type">T3</div><!--!-->
+                                <div class="shift-type">O</div><!--!-->
+                                <div class="shift-time"></div><!--!-->
+                                <div class="shift-time"></div><!--!-->
+                                <div class="shift-time"></div><!--!-->
+                                <div class="shift-time"></div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-type item-status-2" style="width: 120px; padding: 0 4px; align-content: center; justify-content: flex-start;">Đã duyệt</div><!--!-->
+                                <div class="shift-type" style="width: 60px; padding: 0 4px; align-content: center; justify-content: flex-start;">Pass</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">Parttime - PA1</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">Crew</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">083-HNYP</div><!--!-->
+                                <div class="shift-type" style="width: 90px; padding: 0 4px; align-content: center; justify-content: flex-start;">Cook</div><!--!-->
+                                <div class="shift-type" style="width: 300px; padding: 0 4px; align-content: center; justify-content: flex-start;"></div></div></div></div><div class="timesheet-row"><div class="shift-block"><div class="shift-info"><div class="shift-type">04</div><!--!-->
+                                <div class="shift-type">T4</div><!--!-->
+                                <div class="shift-type">W</div><!--!-->
+                                <div class="shift-time">09:00</div><!--!-->
+                                <div class="shift-time"></div><!--!-->
+                                <div class="shift-time"></div><!--!-->
+                                <div class="shift-time">16:00</div><!--!-->
+                                <div class="shift-hour">7.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">1.00</div><!--!-->
+                                <div class="shift-type item-status-2" style="width: 120px; padding: 0 4px; align-content: center; justify-content: flex-start;">Đã duyệt</div><!--!-->
+                                <div class="shift-type" style="width: 60px; padding: 0 4px; align-content: center; justify-content: flex-start;">Pass</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">Parttime - PA1</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">Crew</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">083-HNYP</div><!--!-->
+                                <div class="shift-type" style="width: 90px; padding: 0 4px; align-content: center; justify-content: flex-start;">Lobby</div><!--!-->
+                                <div class="shift-type" style="width: 300px; padding: 0 4px; align-content: center; justify-content: flex-start;"></div></div></div></div><div class="timesheet-row"><div class="shift-block"><div class="shift-info"><div class="shift-type">05</div><!--!-->
+                                <div class="shift-type">T5</div><!--!-->
+                                <div class="shift-type">W</div><!--!-->
+                                <div class="shift-time">08:45</div><!--!-->
+                                <div class="shift-time"></div><!--!-->
+                                <div class="shift-time"></div><!--!-->
+                                <div class="shift-time">18:15</div><!--!-->
+                                <div class="shift-hour">9.50</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">1.00</div><!--!-->
+                                <div class="shift-type item-status-2" style="width: 120px; padding: 0 4px; align-content: center; justify-content: flex-start;">Đã duyệt</div><!--!-->
+                                <div class="shift-type" style="width: 60px; padding: 0 4px; align-content: center; justify-content: flex-start;">Pass</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">Parttime - PA1</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">Crew</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">083-HNYP</div><!--!-->
+                                <div class="shift-type" style="width: 90px; padding: 0 4px; align-content: center; justify-content: flex-start;">Cook</div><!--!-->
+                                <div class="shift-type" style="width: 300px; padding: 0 4px; align-content: center; justify-content: flex-start;"></div></div></div></div><div class="timesheet-row"><div class="shift-block"><div class="shift-info"><div class="shift-type">06</div><!--!-->
+                                <div class="shift-type">T6</div><!--!-->
+                                <div class="shift-type">W</div><!--!-->
+                                <div class="shift-time">08:30</div><!--!-->
+                                <div class="shift-time"></div><!--!-->
+                                <div class="shift-time"></div><!--!-->
+                                <div class="shift-time">14:00</div><!--!-->
+                                <div class="shift-hour">5.50</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.50</div><!--!-->
+                                <div class="shift-type item-status-2" style="width: 120px; padding: 0 4px; align-content: center; justify-content: flex-start;">Đã duyệt</div><!--!-->
+                                <div class="shift-type" style="width: 60px; padding: 0 4px; align-content: center; justify-content: flex-start;">Pass</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">Parttime - PA1</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">Crew</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">083-HNYP</div><!--!-->
+                                <div class="shift-type" style="width: 90px; padding: 0 4px; align-content: center; justify-content: flex-start;">Cook</div><!--!-->
+                                <div class="shift-type" style="width: 300px; padding: 0 4px; align-content: center; justify-content: flex-start;"></div></div></div></div><div class="timesheet-row"><div class="shift-block"><div class="shift-info"><div class="shift-type">07</div><!--!-->
+                                <div class="shift-type">T7</div><!--!-->
+                                <div class="shift-type">W</div><!--!-->
+                                <div class="shift-time">10:00</div><!--!-->
+                                <div class="shift-time">14:00</div><!--!-->
+                                <div class="shift-time">18:00</div><!--!-->
+                                <div class="shift-time">22:00</div><!--!-->
+                                <div class="shift-hour">8.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">1.00</div><!--!-->
+                                <div class="shift-type item-status-2" style="width: 120px; padding: 0 4px; align-content: center; justify-content: flex-start;">Đã duyệt</div><!--!-->
+                                <div class="shift-type" style="width: 60px; padding: 0 4px; align-content: center; justify-content: flex-start;">Pass</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">Parttime - PA1</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">Crew</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">083-HNYP</div><!--!-->
+                                <div class="shift-type" style="width: 90px; padding: 0 4px; align-content: center; justify-content: flex-start;">Cook</div><!--!-->
+                                <div class="shift-type" style="width: 300px; padding: 0 4px; align-content: center; justify-content: flex-start;"></div></div></div></div><div class="timesheet-row"><div class="shift-block"><div class="shift-info"><div class="shift-type">08</div><!--!-->
+                                <div class="shift-type">CN</div><!--!-->
+                                <div class="shift-type">W</div><!--!-->
+                                <div class="shift-time">17:15</div><!--!-->
+                                <div class="shift-time"></div><!--!-->
+                                <div class="shift-time"></div><!--!-->
+                                <div class="shift-time">22:00</div><!--!-->
+                                <div class="shift-hour">4.75</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.50</div><!--!-->
+                                <div class="shift-type item-status-2" style="width: 120px; padding: 0 4px; align-content: center; justify-content: flex-start;">Đã duyệt</div><!--!-->
+                                <div class="shift-type" style="width: 60px; padding: 0 4px; align-content: center; justify-content: flex-start;">Pass</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">Parttime - PA1</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">Crew</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">083-HNYP</div><!--!-->
+                                <div class="shift-type" style="width: 90px; padding: 0 4px; align-content: center; justify-content: flex-start;">Lobby</div><!--!-->
+                                <div class="shift-type" style="width: 300px; padding: 0 4px; align-content: center; justify-content: flex-start;"></div></div></div></div><div class="timesheet-row"><div class="shift-block"><div class="shift-info"><div class="shift-type">09</div><!--!-->
+                                <div class="shift-type">T2</div><!--!-->
+                                <div class="shift-type">W</div><!--!-->
+                                <div class="shift-time">09:30</div><!--!-->
+                                <div class="shift-time">14:00</div><!--!-->
+                                <div class="shift-time">18:00</div><!--!-->
+                                <div class="shift-time">23:00</div><!--!-->
+                                <div class="shift-hour">9.50</div><!--!-->
+                                <div class="shift-hour">1.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">1.00</div><!--!-->
+                                <div class="shift-type item-status-2" style="width: 120px; padding: 0 4px; align-content: center; justify-content: flex-start;">Đã duyệt</div><!--!-->
+                                <div class="shift-type" style="width: 60px; padding: 0 4px; align-content: center; justify-content: flex-start;">Pass</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">Parttime - PA1</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">Crew</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">083-HNYP</div><!--!-->
+                                <div class="shift-type" style="width: 90px; padding: 0 4px; align-content: center; justify-content: flex-start;">Lobby</div><!--!-->
+                                <div class="shift-type" style="width: 300px; padding: 0 4px; align-content: center; justify-content: flex-start;"></div></div></div></div><div class="timesheet-row"><div class="shift-block"><div class="shift-info"><div class="shift-type">10</div><!--!-->
+                                <div class="shift-type">T3</div><!--!-->
+                                <div class="shift-type">W</div><!--!-->
+                                <div class="shift-time">18:00</div><!--!-->
+                                <div class="shift-time"></div><!--!-->
+                                <div class="shift-time"></div><!--!-->
+                                <div class="shift-time">22:00</div><!--!-->
+                                <div class="shift-hour">4.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.50</div><!--!-->
+                                <div class="shift-type item-status-2" style="width: 120px; padding: 0 4px; align-content: center; justify-content: flex-start;">Đã duyệt</div><!--!-->
+                                <div class="shift-type" style="width: 60px; padding: 0 4px; align-content: center; justify-content: flex-start;">Pass</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">Parttime - PA1</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">Crew</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">083-HNYP</div><!--!-->
+                                <div class="shift-type" style="width: 90px; padding: 0 4px; align-content: center; justify-content: flex-start;">Cook</div><!--!-->
+                                <div class="shift-type" style="width: 300px; padding: 0 4px; align-content: center; justify-content: flex-start;"></div></div></div></div><div class="timesheet-row"><div class="shift-block"><div class="shift-info"><div class="shift-type">11</div><!--!-->
+                                <div class="shift-type">T4</div><!--!-->
+                                <div class="shift-type">W</div><!--!-->
+                                <div class="shift-time">08:30</div><!--!-->
+                                <div class="shift-time"></div><!--!-->
+                                <div class="shift-time"></div><!--!-->
+                                <div class="shift-time">16:00</div><!--!-->
+                                <div class="shift-hour">7.50</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">1.00</div><!--!-->
+                                <div class="shift-type item-status-2" style="width: 120px; padding: 0 4px; align-content: center; justify-content: flex-start;">Đã duyệt</div><!--!-->
+                                <div class="shift-type" style="width: 60px; padding: 0 4px; align-content: center; justify-content: flex-start;">Pass</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">Parttime - PA1</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">Crew</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">083-HNYP</div><!--!-->
+                                <div class="shift-type" style="width: 90px; padding: 0 4px; align-content: center; justify-content: flex-start;">Cook</div><!--!-->
+                                <div class="shift-type" style="width: 300px; padding: 0 4px; align-content: center; justify-content: flex-start;"></div></div></div></div><div class="timesheet-row"><div class="shift-block"><div class="shift-info"><div class="shift-type">12</div><!--!-->
+                                <div class="shift-type">T5</div><!--!-->
+                                <div class="shift-type">O</div><!--!-->
+                                <div class="shift-time"></div><!--!-->
+                                <div class="shift-time"></div><!--!-->
+                                <div class="shift-time"></div><!--!-->
+                                <div class="shift-time"></div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-type item-status-2" style="width: 120px; padding: 0 4px; align-content: center; justify-content: flex-start;">Đã duyệt</div><!--!-->
+                                <div class="shift-type" style="width: 60px; padding: 0 4px; align-content: center; justify-content: flex-start;">Pass</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">Parttime - PA1</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">Crew</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">083-HNYP</div><!--!-->
+                                <div class="shift-type" style="width: 90px; padding: 0 4px; align-content: center; justify-content: flex-start;">Cook</div><!--!-->
+                                <div class="shift-type" style="width: 300px; padding: 0 4px; align-content: center; justify-content: flex-start;"></div></div></div></div><div class="timesheet-row"><div class="shift-block"><div class="shift-info"><div class="shift-type">13</div><!--!-->
+                                <div class="shift-type">T6</div><!--!-->
+                                <div class="shift-type">W</div><!--!-->
+                                <div class="shift-time">14:00</div><!--!-->
+                                <div class="shift-time"></div><!--!-->
+                                <div class="shift-time"></div><!--!-->
+                                <div class="shift-time">22:00</div><!--!-->
+                                <div class="shift-hour">8.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">1.00</div><!--!-->
+                                <div class="shift-type item-status-2" style="width: 120px; padding: 0 4px; align-content: center; justify-content: flex-start;">Đã duyệt</div><!--!-->
+                                <div class="shift-type" style="width: 60px; padding: 0 4px; align-content: center; justify-content: flex-start;">Pass</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">Parttime - PA1</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">Crew</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">083-HNYP</div><!--!-->
+                                <div class="shift-type" style="width: 90px; padding: 0 4px; align-content: center; justify-content: flex-start;">Cook</div><!--!-->
+                                <div class="shift-type" style="width: 300px; padding: 0 4px; align-content: center; justify-content: flex-start;"></div></div></div></div><div class="timesheet-row"><div class="shift-block"><div class="shift-info"><div class="shift-type">14</div><!--!-->
+                                <div class="shift-type">T7</div><!--!-->
+                                <div class="shift-type">W</div><!--!-->
+                                <div class="shift-time">17:00</div><!--!-->
+                                <div class="shift-time"></div><!--!-->
+                                <div class="shift-time"></div><!--!-->
+                                <div class="shift-time">22:00</div><!--!-->
+                                <div class="shift-hour">5.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.50</div><!--!-->
+                                <div class="shift-type item-status-2" style="width: 120px; padding: 0 4px; align-content: center; justify-content: flex-start;">Đã duyệt</div><!--!-->
+                                <div class="shift-type" style="width: 60px; padding: 0 4px; align-content: center; justify-content: flex-start;">Pass</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">Parttime - PA1</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">Crew</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">083-HNYP</div><!--!-->
+                                <div class="shift-type" style="width: 90px; padding: 0 4px; align-content: center; justify-content: flex-start;">Lobby</div><!--!-->
+                                <div class="shift-type" style="width: 300px; padding: 0 4px; align-content: center; justify-content: flex-start;"></div></div></div></div><div class="timesheet-row"><div class="shift-block"><div class="shift-info"><div class="shift-type">15</div><!--!-->
+                                <div class="shift-type">CN</div><!--!-->
+                                <div class="shift-type">O</div><!--!-->
+                                <div class="shift-time"></div><!--!-->
+                                <div class="shift-time"></div><!--!-->
+                                <div class="shift-time"></div><!--!-->
+                                <div class="shift-time"></div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-type item-status-2" style="width: 120px; padding: 0 4px; align-content: center; justify-content: flex-start;">Đã duyệt</div><!--!-->
+                                <div class="shift-type" style="width: 60px; padding: 0 4px; align-content: center; justify-content: flex-start;">Pass</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">Parttime - PA1</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">Crew</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">083-HNYP</div><!--!-->
+                                <div class="shift-type" style="width: 90px; padding: 0 4px; align-content: center; justify-content: flex-start;"></div><!--!-->
+                                <div class="shift-type" style="width: 300px; padding: 0 4px; align-content: center; justify-content: flex-start;"></div></div></div></div><div class="timesheet-row"><div class="shift-block"><div class="shift-info"><div class="shift-type">16</div><!--!-->
+                                <div class="shift-type">T2</div><!--!-->
+                                <div class="shift-type">W</div><!--!-->
+                                <div class="shift-time">17:15</div><!--!-->
+                                <div class="shift-time"></div><!--!-->
+                                <div class="shift-time"></div><!--!-->
+                                <div class="shift-time">22:00</div><!--!-->
+                                <div class="shift-hour">4.75</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.50</div><!--!-->
+                                <div class="shift-type item-status-2" style="width: 120px; padding: 0 4px; align-content: center; justify-content: flex-start;">Đã duyệt</div><!--!-->
+                                <div class="shift-type" style="width: 60px; padding: 0 4px; align-content: center; justify-content: flex-start;">Pass</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">Parttime - PA1</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">Crew</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">083-HNYP</div><!--!-->
+                                <div class="shift-type" style="width: 90px; padding: 0 4px; align-content: center; justify-content: flex-start;">Cook</div><!--!-->
+                                <div class="shift-type" style="width: 300px; padding: 0 4px; align-content: center; justify-content: flex-start;"></div></div></div></div><div class="timesheet-row"><div class="shift-block"><div class="shift-info"><div class="shift-type">17</div><!--!-->
+                                <div class="shift-type">T3</div><!--!-->
+                                <div class="shift-type">W</div><!--!-->
+                                <div class="shift-time">18:15</div><!--!-->
+                                <div class="shift-time"></div><!--!-->
+                                <div class="shift-time"></div><!--!-->
+                                <div class="shift-time">22:00</div><!--!-->
+                                <div class="shift-hour">3.75</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.50</div><!--!-->
+                                <div class="shift-type item-status-2" style="width: 120px; padding: 0 4px; align-content: center; justify-content: flex-start;">Đã duyệt</div><!--!-->
+                                <div class="shift-type" style="width: 60px; padding: 0 4px; align-content: center; justify-content: flex-start;">Pass</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">Parttime - PA1</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">Crew</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">083-HNYP</div><!--!-->
+                                <div class="shift-type" style="width: 90px; padding: 0 4px; align-content: center; justify-content: flex-start;">Cook</div><!--!-->
+                                <div class="shift-type" style="width: 300px; padding: 0 4px; align-content: center; justify-content: flex-start;"></div></div></div></div><div class="timesheet-row"><div class="shift-block"><div class="shift-info"><div class="shift-type">18</div><!--!-->
+                                <div class="shift-type">T4</div><!--!-->
+                                <div class="shift-type">W</div><!--!-->
+                                <div class="shift-time">17:00</div><!--!-->
+                                <div class="shift-time"></div><!--!-->
+                                <div class="shift-time"></div><!--!-->
+                                <div class="shift-time">22:00</div><!--!-->
+                                <div class="shift-hour">5.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.50</div><!--!-->
+                                <div class="shift-type item-status-2" style="width: 120px; padding: 0 4px; align-content: center; justify-content: flex-start;">Đã duyệt</div><!--!-->
+                                <div class="shift-type" style="width: 60px; padding: 0 4px; align-content: center; justify-content: flex-start;">Pass</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">Parttime - PA1</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">Crew</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">083-HNYP</div><!--!-->
+                                <div class="shift-type" style="width: 90px; padding: 0 4px; align-content: center; justify-content: flex-start;">Cook</div><!--!-->
+                                <div class="shift-type" style="width: 300px; padding: 0 4px; align-content: center; justify-content: flex-start;"></div></div></div></div><div class="timesheet-row"><div class="shift-block"><div class="shift-info"><div class="shift-type">19</div><!--!-->
+                                <div class="shift-type">T5</div><!--!-->
+                                <div class="shift-type">W</div><!--!-->
+                                <div class="shift-time">08:45</div><!--!-->
+                                <div class="shift-time"></div><!--!-->
+                                <div class="shift-time"></div><!--!-->
+                                <div class="shift-time">14:00</div><!--!-->
+                                <div class="shift-hour">5.25</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.50</div><!--!-->
+                                <div class="shift-type item-status-2" style="width: 120px; padding: 0 4px; align-content: center; justify-content: flex-start;">Đã duyệt</div><!--!-->
+                                <div class="shift-type" style="width: 60px; padding: 0 4px; align-content: center; justify-content: flex-start;">Pass</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">Parttime - PA1</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">Crew</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">083-HNYP</div><!--!-->
+                                <div class="shift-type" style="width: 90px; padding: 0 4px; align-content: center; justify-content: flex-start;">Cook</div><!--!-->
+                                <div class="shift-type" style="width: 300px; padding: 0 4px; align-content: center; justify-content: flex-start;"></div></div></div></div><div class="timesheet-row"><div class="shift-block"><div class="shift-info"><div class="shift-type">20</div><!--!-->
+                                <div class="shift-type">T6</div><!--!-->
+                                <div class="shift-type">W</div><!--!-->
+                                <div class="shift-time">08:45</div><!--!-->
+                                <div class="shift-time"></div><!--!-->
+                                <div class="shift-time"></div><!--!-->
+                                <div class="shift-time">17:15</div><!--!-->
+                                <div class="shift-hour">8.50</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">1.00</div><!--!-->
+                                <div class="shift-type item-status-2" style="width: 120px; padding: 0 4px; align-content: center; justify-content: flex-start;">Đã duyệt</div><!--!-->
+                                <div class="shift-type" style="width: 60px; padding: 0 4px; align-content: center; justify-content: flex-start;">Pass</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">Parttime - PA1</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">Crew</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">083-HNYP</div><!--!-->
+                                <div class="shift-type" style="width: 90px; padding: 0 4px; align-content: center; justify-content: flex-start;">Cook</div><!--!-->
+                                <div class="shift-type" style="width: 300px; padding: 0 4px; align-content: center; justify-content: flex-start;"></div></div></div></div><div class="timesheet-row"><div class="shift-block"><div class="shift-info"><div class="shift-type">21</div><!--!-->
+                                <div class="shift-type">T7</div><!--!-->
+                                <div class="shift-type">W</div><!--!-->
+                                <div class="shift-time">17:00</div><!--!-->
+                                <div class="shift-time"></div><!--!-->
+                                <div class="shift-time"></div><!--!-->
+                                <div class="shift-time">22:00</div><!--!-->
+                                <div class="shift-hour">5.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.50</div><!--!-->
+                                <div class="shift-type item-status-2" style="width: 120px; padding: 0 4px; align-content: center; justify-content: flex-start;">Đã duyệt</div><!--!-->
+                                <div class="shift-type" style="width: 60px; padding: 0 4px; align-content: center; justify-content: flex-start;">Pass</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">Parttime - PA1</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">Crew</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">083-HNYP</div><!--!-->
+                                <div class="shift-type" style="width: 90px; padding: 0 4px; align-content: center; justify-content: flex-start;">Cook</div><!--!-->
+                                <div class="shift-type" style="width: 300px; padding: 0 4px; align-content: center; justify-content: flex-start;"></div></div></div></div><div class="timesheet-row"><div class="shift-block"><div class="shift-info"><div class="shift-type">22</div><!--!-->
+                                <div class="shift-type">CN</div><!--!-->
+                                <div class="shift-type">W</div><!--!-->
+                                <div class="shift-time">10:00</div><!--!-->
+                                <div class="shift-time"></div><!--!-->
+                                <div class="shift-time"></div><!--!-->
+                                <div class="shift-time">18:00</div><!--!-->
+                                <div class="shift-hour">8.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">1.00</div><!--!-->
+                                <div class="shift-type item-status-2" style="width: 120px; padding: 0 4px; align-content: center; justify-content: flex-start;">Đã duyệt</div><!--!-->
+                                <div class="shift-type" style="width: 60px; padding: 0 4px; align-content: center; justify-content: flex-start;">Pass</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">Parttime - PA1</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">Crew</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">083-HNYP</div><!--!-->
+                                <div class="shift-type" style="width: 90px; padding: 0 4px; align-content: center; justify-content: flex-start;">Lobby</div><!--!-->
+                                <div class="shift-type" style="width: 300px; padding: 0 4px; align-content: center; justify-content: flex-start;"></div></div></div></div><div class="timesheet-row"><div class="shift-block"><div class="shift-info"><div class="shift-type">23</div><!--!-->
+                                <div class="shift-type">T2</div><!--!-->
+                                <div class="shift-type">W</div><!--!-->
+                                <div class="shift-time">09:00</div><!--!-->
+                                <div class="shift-time"></div><!--!-->
+                                <div class="shift-time"></div><!--!-->
+                                <div class="shift-time">17:00</div><!--!-->
+                                <div class="shift-hour">8.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">1.00</div><!--!-->
+                                <div class="shift-type item-status-2" style="width: 120px; padding: 0 4px; align-content: center; justify-content: flex-start;">Đã duyệt</div><!--!-->
+                                <div class="shift-type" style="width: 60px; padding: 0 4px; align-content: center; justify-content: flex-start;">Pass</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">Parttime - PA1</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">Crew</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">083-HNYP</div><!--!-->
+                                <div class="shift-type" style="width: 90px; padding: 0 4px; align-content: center; justify-content: flex-start;">Cook</div><!--!-->
+                                <div class="shift-type" style="width: 300px; padding: 0 4px; align-content: center; justify-content: flex-start;"></div></div></div></div><div class="timesheet-row"><div class="shift-block"><div class="shift-info"><div class="shift-type">24</div><!--!-->
+                                <div class="shift-type">T3</div><!--!-->
+                                <div class="shift-type">W</div><!--!-->
+                                <div class="shift-time">18:15</div><!--!-->
+                                <div class="shift-time"></div><!--!-->
+                                <div class="shift-time"></div><!--!-->
+                                <div class="shift-time">22:00</div><!--!-->
+                                <div class="shift-hour">3.75</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.50</div><!--!-->
+                                <div class="shift-type item-status-2" style="width: 120px; padding: 0 4px; align-content: center; justify-content: flex-start;">Đã duyệt</div><!--!-->
+                                <div class="shift-type" style="width: 60px; padding: 0 4px; align-content: center; justify-content: flex-start;">Pass</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">Parttime - PA1</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">Crew</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">083-HNYP</div><!--!-->
+                                <div class="shift-type" style="width: 90px; padding: 0 4px; align-content: center; justify-content: flex-start;"></div><!--!-->
+                                <div class="shift-type" style="width: 300px; padding: 0 4px; align-content: center; justify-content: flex-start;"></div></div></div></div><div class="timesheet-row"><div class="shift-block"><div class="shift-info"><div class="shift-type">25</div><!--!-->
+                                <div class="shift-type">T4</div><!--!-->
+                                <div class="shift-type">W</div><!--!-->
+                                <div class="shift-time">09:15</div><!--!-->
+                                <div class="shift-time"></div><!--!-->
+                                <div class="shift-time"></div><!--!-->
+                                <div class="shift-time">18:00</div><!--!-->
+                                <div class="shift-hour">8.75</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">1.00</div><!--!-->
+                                <div class="shift-type item-status-2" style="width: 120px; padding: 0 4px; align-content: center; justify-content: flex-start;">Đã duyệt</div><!--!-->
+                                <div class="shift-type" style="width: 60px; padding: 0 4px; align-content: center; justify-content: flex-start;">Pass</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">Parttime - PA1</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">Crew</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">083-HNYP</div><!--!-->
+                                <div class="shift-type" style="width: 90px; padding: 0 4px; align-content: center; justify-content: flex-start;">Cook</div><!--!-->
+                                <div class="shift-type" style="width: 300px; padding: 0 4px; align-content: center; justify-content: flex-start;"></div></div></div></div><div class="timesheet-row"><div class="shift-block"><div class="shift-info"><div class="shift-type">26</div><!--!-->
+                                <div class="shift-type">T5</div><!--!-->
+                                <div class="shift-type">W</div><!--!-->
+                                <div class="shift-time">08:45</div><!--!-->
+                                <div class="shift-time"></div><!--!-->
+                                <div class="shift-time"></div><!--!-->
+                                <div class="shift-time">12:00</div><!--!-->
+                                <div class="shift-hour">3.25</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-hour">0.00</div><!--!-->
+                                <div class="shift-type item-status-2" style="width: 120px; padding: 0 4px; align-content: center; justify-content: flex-start;">Đã duyệt</div><!--!-->
+                                <div class="shift-type" style="width: 60px; padding: 0 4px; align-content: center; justify-content: flex-start;">Pass</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">Parttime - PA1</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">Crew</div><!--!-->
+                                <div class="shift-type" style="width: 150px; padding: 0 4px; align-content: center; justify-content: flex-start;">083-HNYP</div><!--!-->
+                                <div class="shift-type" style="width: 90px; padding: 0 4px; align-content: center; justify-content: flex-start;">Cook</div><!--!-->
+                                <div class="shift-type" style="width: 300px; padding: 0 4px; align-content: center; justify-content: flex-start;"></div></div></div></div></div></div></div></div><!--!-->
+                        <!--!--><div class="card monthly-attendances"><!--!--><div class="card-header">
+        Chấm công
+    </div><div class="card-title"><!--!--><div class="month-selector " style="flex: 1;"><!--!--><div class="month-selector-label">Tháng</div>
+    <div class="month-selector-field"><div class="month-selector-prev"></div><!--!-->
+        <div class="month-selector-text"><input type="number" min="1" max="12" inputmode="numeric" style=""><!--!-->
+            <!--!--><div>/</div>
+            <input type="number" min="2020" max="2080" inputmode="numeric" style=""></div><!--!-->
+        <div class="month-selector-next"></div></div></div></div><!--!-->
+    <div class="card-body"><div class="list"><div class="list-body"><div class="list-item"><div class="item-day item-dow-0">01</div><!--!-->
+                        <div class="item-dow item-dow-0">CN</div><!--!-->
+                        
+                        <div class="item-attendances">09:58:41; 17:58:32; 22:23:55; 22:29:35</div></div><div class="list-item"><div class="item-day item-dow-1">02</div><!--!-->
+                        <div class="item-dow item-dow-1">T2</div><!--!-->
+                        
+                        <div class="item-attendances">13:00:11; 23:12:24</div></div><div class="list-item"><div class="item-day item-dow-2">03</div><!--!-->
+                        <div class="item-dow item-dow-2">T3</div><!--!-->
+                        
+                        <div class="item-attendances">22:48:16</div></div><div class="list-item"><div class="item-day item-dow-3">04</div><!--!-->
+                        <div class="item-dow item-dow-3">T4</div><!--!-->
+                        
+                        <div class="item-attendances">08:45:47; 14:03:31; 22:22:49</div></div><div class="list-item"><div class="item-day item-dow-4">05</div><!--!-->
+                        <div class="item-dow item-dow-4">T5</div><!--!-->
+                        
+                        <div class="item-attendances">08:36:35; 18:23:44</div></div><div class="list-item"><div class="item-day item-dow-5">06</div><!--!-->
+                        <div class="item-dow item-dow-5">T6</div><!--!-->
+                        
+                        <div class="item-attendances">08:29:38; 14:43:10</div></div><div class="list-item"><div class="item-day item-dow-6">07</div><!--!-->
+                        <div class="item-dow item-dow-6">T7</div><!--!-->
+                        
+                        <div class="item-attendances">09:59:35; 13:13:15; 17:56:54; 23:20:20</div></div><div class="list-item"><div class="item-day item-dow-0">08</div><!--!-->
+                        <div class="item-dow item-dow-0">CN</div><!--!-->
+                        
+                        <div class="item-attendances">17:01:03; 22:39:46</div></div><div class="list-item"><div class="item-day item-dow-1">09</div><!--!-->
+                        <div class="item-dow item-dow-1">T2</div><!--!-->
+                        
+                        <div class="item-attendances">08:32:39; 15:21:15; 20:08:00; 22:49:31; 23:02:28</div></div><div class="list-item"><div class="item-day item-dow-2">10</div><!--!-->
+                        <div class="item-dow item-dow-2">T3</div><!--!-->
+                        
+                        <div class="item-attendances">17:43:39; 23:03:46</div></div><div class="list-item"><div class="item-day item-dow-3">11</div><!--!-->
+                        <div class="item-dow item-dow-3">T4</div><!--!-->
+                        
+                        <div class="item-attendances">08:28:12; 18:52:03</div></div><div class="list-item"><div class="item-day item-dow-4">12</div><!--!-->
+                        <div class="item-dow item-dow-4">T5</div><!--!-->
+                        
+                        <div class="item-attendances"></div></div><div class="list-item"><div class="item-day item-dow-5">13</div><!--!-->
+                        <div class="item-dow item-dow-5">T6</div><!--!-->
+                        
+                        <div class="item-attendances">13:58:02; 23:32:26</div></div><div class="list-item"><div class="item-day item-dow-6">14</div><!--!-->
+                        <div class="item-dow item-dow-6">T7</div><!--!-->
+                        
+                        <div class="item-attendances">16:52:43; 22:10:37</div></div><div class="list-item"><div class="item-day item-dow-0">15</div><!--!-->
+                        <div class="item-dow item-dow-0">CN</div><!--!-->
+                        
+                        <div class="item-attendances"></div></div><div class="list-item"><div class="item-day item-dow-1">16</div><!--!-->
+                        <div class="item-dow item-dow-1">T2</div><!--!-->
+                        
+                        <div class="item-attendances">17:06:13; 22:30:29</div></div><div class="list-item"><div class="item-day item-dow-2">17</div><!--!-->
+                        <div class="item-dow item-dow-2">T3</div><!--!-->
+                        
+                        <div class="item-attendances">18:01:32; 22:28:10</div></div><div class="list-item"><div class="item-day item-dow-3">18</div><!--!-->
+                        <div class="item-dow item-dow-3">T4</div><!--!-->
+                        
+                        <div class="item-attendances">16:58:56; 22:48:19</div></div><div class="list-item"><div class="item-day item-dow-4">19</div><!--!-->
+                        <div class="item-dow item-dow-4">T5</div><!--!-->
+                        
+                        <div class="item-attendances">08:40:53; 14:34:03</div></div><div class="list-item"><div class="item-day item-dow-5">20</div><!--!-->
+                        <div class="item-dow item-dow-5">T6</div><!--!-->
+                        
+                        <div class="item-attendances">08:33:38; 17:20:44</div></div><div class="list-item"><div class="item-day item-dow-6">21</div><!--!-->
+                        <div class="item-dow item-dow-6">T7</div><!--!-->
+                        
+                        <div class="item-attendances">16:50:13; 22:37:58</div></div><div class="list-item"><div class="item-day item-dow-0">22</div><!--!-->
+                        <div class="item-dow item-dow-0">CN</div><!--!-->
+                        
+                        <div class="item-attendances">09:56:59; 14:08:38; 18:37:10</div></div><div class="list-item"><div class="item-day item-dow-1">23</div><!--!-->
+                        <div class="item-dow item-dow-1">T2</div><!--!-->
+                        
+                        <div class="item-attendances">08:53:21; 17:08:16</div></div><div class="list-item"><div class="item-day item-dow-2">24</div><!--!-->
+                        <div class="item-dow item-dow-2">T3</div><!--!-->
+                        
+                        <div class="item-attendances">18:02:22; 22:39:56</div></div><div class="list-item"><div class="item-day item-dow-3">25</div><!--!-->
+                        <div class="item-dow item-dow-3">T4</div><!--!-->
+                        
+                        <div class="item-attendances">09:01:30; 23:44:52</div></div><div class="list-item"><div class="item-day item-dow-4">26</div><!--!-->
+                        <div class="item-dow item-dow-4">T5</div><!--!-->
+                        
+                        <div class="item-attendances">08:31:53; 13:09:17</div></div><div class="list-item"><div class="item-day item-dow-5">27</div><!--!-->
+                        <div class="item-dow item-dow-5">T6</div><!--!-->
+                        
+                        <div class="item-attendances"></div></div><div class="list-item"><div class="item-day item-dow-6">28</div><!--!-->
+                        <div class="item-dow item-dow-6">T7</div><!--!-->
+                        
+                        <div class="item-attendances"></div></div><div class="list-item"><div class="item-day item-dow-0">29</div><!--!-->
+                        <div class="item-dow item-dow-0">CN</div><!--!-->
+                        
+                        <div class="item-attendances"></div></div><div class="list-item"><div class="item-day item-dow-1">30</div><!--!-->
+                        <div class="item-dow item-dow-1">T2</div><!--!-->
+                        
+                        <div class="item-attendances"></div></div><div class="list-item"><div class="item-day item-dow-2">31</div><!--!-->
+                        <div class="item-dow item-dow-2">T3</div><!--!-->
+                        
+                        <div class="item-attendances"></div></div></div></div></div></div></div><!--!-->
+        <!--!--></div>
+
+    <div id="blazor-error-ui">
+        <div class="error-box">
+            <div class="error-box-message">
+                <div>An unhandled error has occurred. Please reload the page.</div>
+            </div>
+            <a class="icon-close dismiss" style="transform: scale(2.5); margin-right: 20px;"></a>
+        </div>
+    </div>
+
+    <script src="_framework/blazor.webassembly.js"></script>
+    <script src="js/croppie.min.js"></script>
+    <script src="js/site.js?ver=2" asp-append-version="true"></script>
+
+
+
+</body></html>

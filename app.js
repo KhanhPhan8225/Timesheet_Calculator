@@ -384,4 +384,143 @@
     // ── Init ──────────────────────────────────────────
     initTheme();
     loadSavedRate();
+
+    // ── Tabs Logic ────────────────────────────────────
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            tabBtns.forEach(b => b.classList.remove('active'));
+            tabContents.forEach(c => {
+                c.style.display = 'none';
+                c.classList.remove('active');
+            });
+            
+            btn.classList.add('active');
+            const targetId = 'tab-' + btn.dataset.tab;
+            const targetContent = document.getElementById(targetId);
+            targetContent.style.display = 'block';
+            
+            // Allow display block to apply before adding class for opacity transition
+            setTimeout(() => targetContent.classList.add('active'), 10);
+        });
+    });
+
+    // ── Bot Fetch Logic ───────────────────────────────
+    const btnAutoFetch = $('#btnAutoFetch');
+    const hrUsername = $('#hrUsername');
+    const hrPassword = $('#hrPassword');
+    const loadingState = $('#loadingState');
+    const botError = $('#botError');
+    const saveAccountCheck = $('#saveAccountCheck');
+    const savedAccountsContainer = $('#savedAccounts');
+    const savedChipsContainer = $('#savedChipsContainer');
+
+    function loadSavedAccounts() {
+        const accounts = JSON.parse(localStorage.getItem('kfcTimesheetAccounts') || '[]');
+        if (accounts.length === 0) {
+            savedAccountsContainer.style.display = 'none';
+            return;
+        }
+
+        savedAccountsContainer.style.display = 'block';
+        savedChipsContainer.innerHTML = '';
+        
+        accounts.forEach(acc => {
+            const chip = document.createElement('div');
+            chip.className = 'account-chip';
+            chip.innerHTML = `
+                <span class="chip-name">${acc.name}</span>
+                <span class="chip-id">(${acc.username})</span>
+                <span class="chip-remove" title="Xóa tài khoản này">
+                    <svg class="icon icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </span>
+            `;
+
+            // Click chip to autofill and login
+            chip.addEventListener('click', (e) => {
+                if(e.target.closest('.chip-remove')) return; // Ignore if clicked delete
+                hrUsername.value = acc.username;
+                hrPassword.value = acc.password;
+                btnAutoFetch.click();
+            });
+
+            // Click delete
+            chip.querySelector('.chip-remove').addEventListener('click', (e) => {
+                e.stopPropagation();
+                const newAcc = accounts.filter(a => a.username !== acc.username);
+                localStorage.setItem('kfcTimesheetAccounts', JSON.stringify(newAcc));
+                loadSavedAccounts();
+            });
+
+            savedChipsContainer.appendChild(chip);
+        });
+    }
+
+    if (btnAutoFetch) {
+        loadSavedAccounts(); // Call on init
+
+        btnAutoFetch.addEventListener('click', async () => {
+            const username = hrUsername.value.trim();
+            const password = hrPassword.value.trim();
+
+            if (!username || !password) {
+                botError.textContent = "Vui lòng nhập Mã nhân viên và Mật khẩu!";
+                botError.style.display = 'block';
+                return;
+            }
+
+            botError.style.display = 'none';
+            loadingState.style.display = 'block';
+            btnAutoFetch.disabled = true;
+
+            try {
+                // In context of local dev or cloud
+                const apiUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+                                ? 'http://localhost:3000/api/timesheet'
+                                : '/api/timesheet';
+
+                const res = await fetch('http://localhost:3000/api/timesheet', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await res.json();
+
+                if (data.success) {
+                    // Save Account logic
+                    if (saveAccountCheck && saveAccountCheck.checked && data.employeeName) {
+                        let accounts = JSON.parse(localStorage.getItem('kfcTimesheetAccounts') || '[]');
+                        // Remove if exists to append updated to top
+                        accounts = accounts.filter(a => a.username !== username);
+                        accounts.unshift({ username, password, name: data.employeeName });
+                        // Keep max 5 accounts
+                        if (accounts.length > 5) accounts.pop();
+                        localStorage.setItem('kfcTimesheetAccounts', JSON.stringify(accounts));
+                        loadSavedAccounts(); // Refresh UI
+                    }
+
+                    // Populate textarea and calculate
+                    dataInput.value = data.data;
+                    
+                    // Switch back to manual tab to show results
+                    tabBtns[0].click(); 
+                    calculateHours();
+                } else {
+                    botError.textContent = data.error || "Có lỗi xảy ra khi đồng bộ.";
+                    botError.style.display = 'block';
+                }
+            } catch (error) {
+                console.error(error);
+                botError.textContent = "Không thể kết nối tới Server. Đảm bảo bot đang chạy.";
+                botError.style.display = 'block';
+            } finally {
+                loadingState.style.display = 'none';
+                btnAutoFetch.disabled = false;
+            }
+        });
+    }
+
 })();

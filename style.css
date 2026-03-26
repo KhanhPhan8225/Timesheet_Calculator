@@ -934,3 +934,149 @@ textarea:focus {
         width: var(--fill-width) !important;
     }
 }
+
+/* ── Input Tabs ───────────────────────────────────────── */
+.input-tabs {
+    display: flex;
+    gap: 8px;
+    background: var(--input-bg);
+    padding: 4px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+}
+
+.tab-btn {
+    padding: 6px 16px;
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    font-weight: 500;
+    font-family: 'Inter', sans-serif;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all var(--transition);
+}
+
+.tab-btn:hover {
+    color: var(--text);
+}
+
+.tab-btn.active {
+    background: var(--card-bg);
+    color: var(--primary);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* ── Bot Login Form ────────────────────────────────────── */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.input-label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-muted);
+}
+
+.bot-input {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid var(--input-border);
+    border-radius: var(--radius-sm);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.95rem;
+    background: var(--input-bg);
+    color: var(--text);
+    transition: all var(--transition);
+}
+
+.bot-input:focus {
+    border-color: var(--primary);
+    outline: none;
+    box-shadow: 0 0 0 3px var(--focus-ring);
+}
+
+/* ── Saved Accounts ───────────────────────────────────── */
+.saved-accounts-container {
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px dashed var(--border);
+}
+
+.saved-label {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+}
+
+.saved-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.account-chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: var(--primary-light);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    border-radius: 20px;
+    font-size: 0.85rem;
+    color: var(--primary);
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+}
+
+[data-theme="dark"] .account-chip {
+    background: rgba(59, 130, 246, 0.15);
+    color: #93C5FD;
+}
+
+.account-chip:hover {
+    background: var(--primary);
+    color: white;
+}
+
+[data-theme="dark"] .account-chip:hover {
+    background: var(--primary);
+    color: white;
+}
+
+.account-chip .chip-name {
+    font-weight: 600;
+}
+
+.account-chip .chip-id {
+    opacity: 0.8;
+    font-size: 0.75rem;
+}
+
+.chip-remove {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    margin-left: 4px;
+    margin-right: -4px;
+    transition: background 0.2s;
+}
+
+.chip-remove:hover {
+    background: rgba(0,0,0,0.15);
+    color: white;
+}
+
+[data-theme="dark"] .chip-remove:hover {
+    background: rgba(255,255,255,0.25);
+}
