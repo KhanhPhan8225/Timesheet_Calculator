@@ -67,38 +67,69 @@
         });
     }
 
-    // ── Parsing (returns entries with day info) ──────
+    // ── Parsing (handles multiline cell pastes correctly) ──────
     function parseEntries(raw) {
-        const lines = raw.split('\n').filter((l) => l.trim());
+        // Normalize entire input: clean up tabs, multiple spaces, keep it all as one string
+        // so we don't rely on newlines (which get broken during copy/paste from tables)
+        const normalized = raw.replace(/,/g, '.').replace(/\s+/g, ' ');
         const entries = [];
-        const hourPattern = /\b\d+[.,]\d{1,2}\b/g;
-        const dayInfoPattern = /^(\d{1,2})\t(CN|T[2-7])\t/;
-
-        lines.forEach((line) => {
-            const normalized = line.replace(/,/g, '.');
-            const matches = normalized.match(hourPattern);
-            if (!matches) return;
-
-            const validHours = [];
-            matches.forEach((m) => {
-                const num = parseFloat(m);
-                if (num > 0 && num <= 24) validHours.push(num);
+        
+        // Find all "Ngày Thứ" markers. e.g., "01 CN", "02 T2"
+        const dayRegex = /\b(\d{1,2})\s+(CN|T[2-7])\b/g;
+        let dayMatch;
+        const dayIndices = [];
+        
+        while ((dayMatch = dayRegex.exec(normalized)) !== null) {
+            dayIndices.push({
+                index: dayMatch.index,
+                dayNum: dayMatch[1].padStart(2, '0'),
+                dayName: dayMatch[2]
             });
-
-            if (validHours.length === 0) return;
-
-            // Extract day info from line
-            const dayMatch = line.match(dayInfoPattern);
-            const dayNum = dayMatch ? dayMatch[1].padStart(2, '0') : null;
-            const dayName = dayMatch ? dayMatch[2] : null;
-
+        }
+        
+        // If no days found, might be an empty or invalid paste
+        if (dayIndices.length === 0) return entries;
+        
+        // Process each chunk (from one "Ngày" to the next)
+        for (let i = 0; i < dayIndices.length; i++) {
+            const current = dayIndices[i];
+            const nextIndex = i + 1 < dayIndices.length ? dayIndices[i + 1].index : normalized.length;
+            
+            // The text block belonging to this specific day
+            const chunk = normalized.substring(current.index, nextIndex);
+            
+            // Look for times (HH:MM). There are usually 3 to 4 times (Từ, Nghỉ(opt), Vào, Đến)
+            const timeMatches = chunk.match(/\b\d{1,2}:\d{2}\b/g);
+            if (!timeMatches || timeMatches.length === 0) continue;
+            
+            const endTime = timeMatches[timeMatches.length - 1]; // Last time is "Đến" (End Time)
+            const parts = endTime.split(':');
+            const endHour = parseInt(parts[0], 10);
+            
+            // Get text *after* the last time to find the "Tổng giờ làm" and "Vị trí"
+            const afterTimeStr = chunk.substring(chunk.lastIndexOf(endTime) + endTime.length);
+            
+            // Decimal numbers list: Tổng, Đêm, TổngOT, ĐêmOT, Ngày công
+            const decimalMatches = afterTimeStr.match(/\b\d+\.\d{1,2}\b/g);
+            if (!decimalMatches) continue;
+            
+            // The first decimal after all the times is the "Tổng giờ làm"
+            const hoursValue = parseFloat(decimalMatches[0]);
+            if (isNaN(hoursValue) || hoursValue <= 0 || hoursValue > 24) continue;
+            
+            // Look for Cook/Bếp anywhere in the chunk
+            const position = /\b(cook|bếp)\b/i.test(chunk) ? 'Cook' : null;
+            
             entries.push({
-                day: dayNum,
-                dayName: dayName,
-                hours: validHours[validHours.length - 1], // last valid decimal is usually the hours column
-                label: dayName ? `${dayName} ${dayNum}` : null,
+                day: current.dayNum,
+                dayName: current.dayName,
+                hours: hoursValue,
+                endTime: endTime,
+                endHour: endHour,
+                position: position,
+                label: `${current.dayNum} ${current.dayName}`,
             });
-        });
+        }
 
         return entries;
     }
@@ -145,19 +176,27 @@
     }
 
     // ── Build salary HTML ─────────────────────────────
-    function buildSalaryHTML(total, hourlyRate, entryCount) {
+    function buildSalaryHTML(total, hourlyRate, entryCount, cookBonus) {
         if (hourlyRate <= 0) return '';
 
         const gross = total * hourlyRate;
-        const avgPerDay = gross / entryCount;
+        const totalWithBonus = gross + cookBonus;
+        const avgPerDay = totalWithBonus / entryCount;
+
+        const cookBonusHTML = cookBonus > 0
+            ? `<div class="salary-detail cook-bonus">
+                    🍳 Thưởng đóng ca Cook: <strong>+${formatMoney(cookBonus)}</strong>
+               </div>`
+            : '';
 
         return `
             <div class="salary-card">
                 <h2 class="salary-title">💵 LƯƠNG DỰ KIẾN (THAM KHẢO)</h2>
                 <div class="salary-detail">
-                    <strong>${total.toFixed(2)} giờ × ${formatMoney(hourlyRate).replace(' VNĐ', '')} VNĐ/giờ</strong>
+                    <strong>${total.toFixed(2)} giờ × ${formatMoney(hourlyRate).replace(' VNĐ', '')} VNĐ/giờ = ${formatMoney(gross)}</strong>
                 </div>
-                <div class="salary-total">🎯 Tổng lương: ${formatMoney(gross)}</div>
+                ${cookBonusHTML}
+                <div class="salary-total">🎯 Tổng lương: ${formatMoney(totalWithBonus)}</div>
                 <div class="salary-avg">Lương trung bình/ngày: ${formatMoney(avgPerDay)}</div>
                 <div class="salary-disclaimer">
                     ⚠️ Số tiền trên chỉ mang tính chất tham khảo, chưa bao gồm khấu trừ bảo hiểm, thuế,...
@@ -170,7 +209,8 @@
         const daysList = entries
             .map((e, i) => {
                 const label = e.label || `Ngày ${i + 1}`;
-                return `${label}: ${e.hours} giờ`;
+                const cookTag = e.isCookClosing ? ' 🍳' : '';
+                return `${label}: ${e.hours} giờ${cookTag}`;
             })
             .join('<br>');
         const avg = (total / entries.length).toFixed(2);
@@ -212,9 +252,18 @@
                 return;
             }
 
+            // Mark cook closing shifts & calculate bonus
+            let cookClosingDays = 0;
+            entries.forEach((e) => {
+                const isCook = e.position && e.position.toLowerCase().includes('cook');
+                e.isCookClosing = isCook && e.endHour !== null && e.endHour >= 21;
+                if (e.isCookClosing) cookClosingDays++;
+            });
+            const cookBonus = cookClosingDays * 15000;
+
             const total = entries.reduce((sum, e) => sum + e.hours, 0);
             const chartHTML = buildChartHTML(entries);
-            const salaryHTML = buildSalaryHTML(total, hourlyRate, entries.length);
+            const salaryHTML = buildSalaryHTML(total, hourlyRate, entries.length, cookBonus);
 
             resultDiv.innerHTML = buildResultHTML(entries, total, salaryHTML, chartHTML);
 
@@ -236,15 +285,13 @@
     // ── Load example ──────────────────────────────────
     function loadExample() {
         dataInput.value = [
-            '08\tCN\tW\t16:30\t\t22:00\t5.50\t-\t-\t-\tĐã duyệt',
-            '09\tT2\tW\t17:00\t\t22:00\t5.00\t-\t-\t-\tĐã duyệt',
-            '10\tT3\tW\t17:30\t\t22:30\t5.00\t-\t-\t-\tĐã duyệt',
-            '11\tT4\tW\t17:00\t\t22:30\t5.50\t-\t-\t-\tĐã duyệt',
-            '12\tT5\tW\t17:00\t\t22:00\t5.00\t-\t-\t-\tĐã duyệt',
-            '13\tT6\tW\t13:00\t\t22:30\t9.50\t-\t-\t-\tĐã duyệt',
-            '21\tT7\tW\t16:00\t\t22:00\t6.00\t-\t-\t-\tĐã duyệt',
-            '22\tCN\tW\t10:00\t\t14:00\t4.00\t-\t-\t-\tĐã duyệt',
-            '23\tT2\tW\t10:15\t15:00\t18:00\t22:00\t8.75\t-\t-\t-\tĐã duyệt',
+            '01\tCN\tW\t10:00\t14:00\t18:00\t22:00\t8.00\t0.00\t0.00\t0.00\t1.00\tĐã duyệt\tPass\tParttime - PA1\tCrew\t083-HNYP\tLobby',
+            '02\tT2\tW\t17:00\t\t\t22:00\t5.00\t0.00\t0.00\t0.00\t1.00\tĐã duyệt\tPass\tParttime - PA1\tCrew\t083-HNYP\tLobby',
+            '03\tT3\tW\t17:30\t\t\t22:30\t5.00\t0.00\t0.00\t0.00\t1.00\tĐã duyệt\tPass\tParttime - PA1\tCook\t083-HNYP\tKitchen',
+            '04\tT4\tW\t17:00\t\t\t22:30\t5.50\t0.00\t0.00\t0.00\t1.00\tĐã duyệt\tPass\tParttime - PA1\tCook\t083-HNYP\tKitchen',
+            '05\tT5\tW\t17:00\t\t\t22:00\t5.00\t0.00\t0.00\t0.00\t1.00\tĐã duyệt\tPass\tParttime - PA1\tCrew\t083-HNYP\tLobby',
+            '06\tT6\tW\t13:00\t14:00\t18:00\t22:30\t5.50\t0.00\t0.00\t0.00\t1.00\tĐã duyệt\tPass\tParttime - PA1\tCook\t083-HNYP\tKitchen',
+            '07\tT7\tW\t16:00\t\t\t20:00\t4.00\t0.00\t0.00\t0.00\t1.00\tĐã duyệt\tPass\tParttime - PA1\tCook\t083-HNYP\tKitchen',
         ].join('\n');
 
         autoCalculate();
