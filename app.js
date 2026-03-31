@@ -477,7 +477,7 @@
 
             try {
                 // In context of local dev or cloud
-                const apiUrl = 'loose-fawnia-khanhphandev-cd49b07e.koyeb.app/';
+                const apiUrl = 'https://loose-fawnia-khanhphandev-cd49b07e.koyeb.app/api/timesheet';
 
                 const res = await fetch(apiUrl, {
                     method: 'POST',
