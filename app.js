@@ -96,7 +96,7 @@
 
             let hoursValue = parseFloat(decimalMatches[0]);
             if (isNaN(hoursValue) || hoursValue <= 0 || hoursValue > 24) continue;
-            
+
             // Lấy tròn giờ theo tỷ lệ 1/4 (0.25, 0.5, 0.75)
             hoursValue = Math.round(hoursValue * 4) / 4;
 
@@ -396,12 +396,12 @@
                 c.style.display = 'none';
                 c.classList.remove('active');
             });
-            
+
             btn.classList.add('active');
             const targetId = 'tab-' + btn.dataset.tab;
             const targetContent = document.getElementById(targetId);
             targetContent.style.display = 'block';
-            
+
             // Allow display block to apply before adding class for opacity transition
             setTimeout(() => targetContent.classList.add('active'), 10);
         });
@@ -426,7 +426,7 @@
 
         savedAccountsContainer.style.display = 'block';
         savedChipsContainer.innerHTML = '';
-        
+
         accounts.forEach(acc => {
             const chip = document.createElement('div');
             chip.className = 'account-chip';
@@ -440,7 +440,7 @@
 
             // Click chip to autofill and login
             chip.addEventListener('click', (e) => {
-                if(e.target.closest('.chip-remove')) return; // Ignore if clicked delete
+                if (e.target.closest('.chip-remove')) return; // Ignore if clicked delete
                 hrUsername.value = acc.username;
                 hrPassword.value = acc.password;
                 btnAutoFetch.click();
@@ -477,11 +477,9 @@
 
             try {
                 // In context of local dev or cloud
-                const apiUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
-                                ? 'http://localhost:3000/api/timesheet'
-                                : '/api/timesheet';
+                const apiUrl = 'loose-fawnia-khanhphandev-cd49b07e.koyeb.app/';
 
-                const res = await fetch('http://localhost:3000/api/timesheet', {
+                const res = await fetch(apiUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ username, password })
@@ -504,9 +502,9 @@
 
                     // Populate textarea and calculate
                     dataInput.value = data.data;
-                    
+
                     // Switch back to manual tab to show results
-                    tabBtns[0].click(); 
+                    tabBtns[0].click();
                     calculateHours();
                 } else {
                     botError.textContent = data.error || "Có lỗi xảy ra khi đồng bộ.";
