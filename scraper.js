@@ -3,7 +3,17 @@ const { chromium } = require('playwright');
 async function scrapeTimesheet(username, password) {
     let browser;
     try {
-        browser = await chromium.launch({ headless: true });
+        browser = await chromium.launch({ 
+            headless: true,
+            args: [
+                '--no-sandbox', 
+                '--disable-setuid-sandbox', 
+                '--disable-dev-shm-usage', 
+                '--disable-gpu',
+                '--no-zygote',
+                '--single-process'
+            ]
+        });
         const context = await browser.newContext();
         const page = await context.newPage();
 
