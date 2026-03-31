@@ -17,10 +17,10 @@ async function scrapeTimesheet(username, password) {
         const context = await browser.newContext();
         const page = await context.newPage();
 
-        // Tối ưu tốc độ: Chặn tải hình ảnh, CSS, fonts, và tracking
+        // Tối ưu tốc độ: Chặn tải hình ảnh, fonts, và tracking (KHÔNG chặn CSS vì Blazor WASM cần nó để render)
         await page.route('**/*', (route) => {
             const type = route.request().resourceType();
-            if (['image', 'stylesheet', 'font', 'media'].includes(type) || route.request().url().includes('google-analytics')) {
+            if (['image', 'font', 'media'].includes(type) || route.request().url().includes('google-analytics')) {
                 route.abort();
             } else {
                 route.continue();
@@ -28,11 +28,11 @@ async function scrapeTimesheet(username, password) {
         });
 
         console.log('Navigating to KFC HR...');
-        await page.goto('https://hr.kfcvietnam.com.vn/', { waitUntil: 'domcontentloaded' });
+        await page.goto('https://hr.kfcvietnam.com.vn/', { waitUntil: 'networkidle', timeout: 60000 });
 
         // Wait for Blazor to complete its initial render and the login form to show
         console.log('Waiting for login form...');
-        await page.waitForSelector('input[type="text"]', { timeout: 20000 });
+        await page.waitForSelector('input[type="text"]', { timeout: 60000 });
         
         const inputs = await page.$$('input');
         let userField, passField;
