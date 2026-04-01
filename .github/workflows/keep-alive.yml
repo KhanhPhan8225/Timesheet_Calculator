@@ -1,0 +1,10 @@
+name: Keep Koyeb Awake
+on:
+  schedule:
+    - cron: '*/45 * * * *' # Chạy mỗi 45 phút
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wake up service
+        run: curl -s https://loose-fawnia-khanhphandev-cd49b07e.koyeb.app > /dev/null
