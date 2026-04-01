@@ -476,43 +476,68 @@
             btnAutoFetch.disabled = true;
 
             try {
-                // In context of local dev or cloud
-                const apiUrl = 'https://loose-fawnia-khanhphandev-cd49b07e.koyeb.app/api/timesheet';
+                // Hệ thống Failover: VPS trước, Koyeb sau
+                const servers = [
+                    { name: 'VPS', url: 'https://tunnel.khanhphandev.id.vn/api/timesheet' },
+                    { name: 'Koyeb', url: 'https://loose-fawnia-khanhphandev-cd49b07e.koyeb.app/api/timesheet' }
+                ];
 
-                const res = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username, password })
-                });
+                let data = null;
+                let lastError = null;
 
-                const data = await res.json();
+                for (const server of servers) {
+                    try {
+                        console.log(`Đang thử kết nối ${server.name}...`);
+                        loadingState.innerHTML = `⏳ Đang kết nối qua <b>${server.name}</b>... Vui lòng đợi (5-10s)`;
 
-                if (data.success) {
+                        const controller = new AbortController();
+                        const timeoutId = setTimeout(() => controller.abort(), 90000); // 90s timeout
+
+                        const res = await fetch(server.url, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ username, password }),
+                            signal: controller.signal
+                        });
+                        clearTimeout(timeoutId);
+
+                        const json = await res.json();
+
+                        if (json.success) {
+                            data = json;
+                            console.log(`✅ Thành công qua ${server.name}`);
+                            break; // Thành công, dừng vòng lặp
+                        } else {
+                            lastError = json.error || `${server.name} trả về lỗi`;
+                            console.warn(`⚠️ ${server.name} thất bại: ${lastError}`);
+                        }
+                    } catch (err) {
+                        lastError = `${server.name}: ${err.name === 'AbortError' ? 'Quá thời gian chờ' : err.message}`;
+                        console.warn(`⚠️ ${lastError}. Thử server tiếp theo...`);
+                    }
+                }
+
+                if (data) {
                     // Save Account logic
                     if (saveAccountCheck && saveAccountCheck.checked && data.employeeName) {
                         let accounts = JSON.parse(localStorage.getItem('kfcTimesheetAccounts') || '[]');
-                        // Remove if exists to append updated to top
                         accounts = accounts.filter(a => a.username !== username);
                         accounts.unshift({ username, password, name: data.employeeName });
-                        // Keep max 5 accounts
                         if (accounts.length > 5) accounts.pop();
                         localStorage.setItem('kfcTimesheetAccounts', JSON.stringify(accounts));
-                        loadSavedAccounts(); // Refresh UI
+                        loadSavedAccounts();
                     }
 
-                    // Populate textarea and calculate
                     dataInput.value = data.data;
-
-                    // Switch back to manual tab to show results
                     tabBtns[0].click();
                     calculateHours();
                 } else {
-                    botError.textContent = data.error || "Có lỗi xảy ra khi đồng bộ.";
+                    botError.textContent = lastError || "Tất cả server đều không phản hồi.";
                     botError.style.display = 'block';
                 }
             } catch (error) {
                 console.error(error);
-                botError.textContent = "Không thể kết nối tới Server. Đảm bảo bot đang chạy.";
+                botError.textContent = "Không thể kết nối tới bất kỳ Server nào.";
                 botError.style.display = 'block';
             } finally {
                 loadingState.style.display = 'none';
