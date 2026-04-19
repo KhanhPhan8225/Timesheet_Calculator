@@ -34,4 +34,11 @@ app.post('/api/timesheet', async (req, res) => {
 
 app.listen(PORT, () => {
     console.log(`Server is running at http://localhost:${PORT}`);
+
+    // Start Telegram Bot (optional — only if TELEGRAM_BOT_TOKEN is set)
+    try {
+        require('./telegram-bot');
+    } catch (err) {
+        console.error('Failed to start Telegram Bot:', err.message);
+    }
 });

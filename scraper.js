@@ -3,6 +3,7 @@ const { chromium } = require('playwright');
 async function scrapeTimesheet(username, password) {
     let browser;
     try {
+    const isLinux = process.platform === 'linux';
         browser = await chromium.launch({ 
             headless: true,
             args: [
@@ -10,8 +11,8 @@ async function scrapeTimesheet(username, password) {
                 '--disable-setuid-sandbox', 
                 '--disable-dev-shm-usage', 
                 '--disable-gpu',
-                '--no-zygote',
-                '--single-process'
+                // These flags are only safe on Linux containers — they crash Chromium on Windows with heavy Blazor pages
+                ...(isLinux ? ['--no-zygote', '--single-process'] : [])
             ]
         });
         const context = await browser.newContext();

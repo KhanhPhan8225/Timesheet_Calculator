@@ -34,3 +34,4 @@ coverage/
 .agent
 demo.html
 .gitignore
+data/
