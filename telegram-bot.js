@@ -17,6 +17,7 @@ const HTML = { parse_mode: 'HTML' };
 const DATA_DIR = path.join(__dirname, 'data');
 const ACCOUNTS_FILE = path.join(DATA_DIR, 'telegram-accounts.json');
 const RATES_FILE = path.join(DATA_DIR, 'telegram-rates.json');
+const WEEKLY_STATE_FILE = path.join(DATA_DIR, 'telegram-weekly-state.json');
 
 function ensureDataDir() {
     if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
@@ -39,8 +40,14 @@ function saveJSON(filepath, data) {
 const sessions = new Map();
 const savedAccounts = loadJSON(ACCOUNTS_FILE);   // { chatId: [{ username, password, name }] }
 const userRates = loadJSON(RATES_FILE);           // { chatId: rate }
+const weeklyState = loadJSON(WEEKLY_STATE_FILE);  // { sentWeeks: { "YYYY-MM-DD": true } }
 const SESSION_TIMEOUT_MS = 5 * 60 * 1000;
 const MAX_ACCOUNTS = 5;
+const WEEKLY_NOTIFY_TIMEZONE = process.env.WEEKLY_NOTIFY_TIMEZONE || process.env.TZ || 'Asia/Ho_Chi_Minh';
+const WEEKLY_NOTIFY_HOUR = parseInt(process.env.WEEKLY_NOTIFY_HOUR || '0', 10);
+const WEEKLY_NOTIFY_MINUTE = parseInt(process.env.WEEKLY_NOTIFY_MINUTE || '0', 10);
+const WEEKLY_NOTIFY_INTERVAL_MS = 60 * 1000;
+if (!process.env.TZ) process.env.TZ = WEEKLY_NOTIFY_TIMEZONE;
 
 function getAccounts(chatId) {
     return savedAccounts[chatId] || [];
@@ -69,6 +76,20 @@ function getUserRate(chatId) {
 function setUserRate(chatId, rate) {
     userRates[chatId] = rate;
     saveJSON(RATES_FILE, userRates);
+}
+
+function weeklyDeliveryKey(chatId, username, weekKey) {
+    return `${chatId}:${username}:${weekKey}`;
+}
+
+function markWeeklySent(chatId, username, weekKey) {
+    weeklyState.sentWeeks = weeklyState.sentWeeks || {};
+    weeklyState.sentWeeks[weeklyDeliveryKey(chatId, username, weekKey)] = new Date().toISOString();
+    saveJSON(WEEKLY_STATE_FILE, weeklyState);
+}
+
+function wasWeeklySent(chatId, username, weekKey) {
+    return Boolean(weeklyState.sentWeeks && weeklyState.sentWeeks[weeklyDeliveryKey(chatId, username, weekKey)]);
 }
 
 function getSession(chatId) {
@@ -162,6 +183,77 @@ function formatMoney(amount) {
     return new Intl.NumberFormat('vi-VN').format(Math.round(amount));
 }
 
+function startOfDay(date) {
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+}
+
+function addDays(date, days) {
+    const next = new Date(date);
+    next.setDate(next.getDate() + days);
+    return next;
+}
+
+function startOfWeekMonday(date) {
+    const day = date.getDay();
+    const diff = day === 0 ? -6 : 1 - day;
+    return startOfDay(addDays(date, diff));
+}
+
+function dateKey(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
+function formatDateVN(date) {
+    return `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
+}
+
+function inferEntryDate(entry, referenceDate) {
+    const day = parseInt(entry.day, 10);
+    if (!day) return null;
+
+    const candidates = [-1, 0, 1].map(offset => {
+        const d = new Date(referenceDate.getFullYear(), referenceDate.getMonth() + offset, day);
+        return d.getDate() === day ? d : null;
+    }).filter(Boolean);
+
+    candidates.sort((a, b) => Math.abs(a - referenceDate) - Math.abs(b - referenceDate));
+    return candidates[0] || null;
+}
+
+function annotateEntriesWithDates(entries, referenceDate) {
+    return entries.map(entry => ({ ...entry, date: inferEntryDate(entry, referenceDate) }));
+}
+
+function getPreviousWeekRange(now = new Date()) {
+    const currentWeekStart = startOfWeekMonday(now);
+    const start = addDays(currentWeekStart, -7);
+    const end = addDays(currentWeekStart, -1);
+    return { start, end, currentWeekStart };
+}
+
+function isWithinRange(date, start, end) {
+    if (!date) return false;
+    const d = startOfDay(date).getTime();
+    return d >= start.getTime() && d <= end.getTime();
+}
+
+function sumHours(entries) {
+    return entries.reduce((sum, e) => sum + e.hours, 0);
+}
+
+function roundHours(hours) {
+    return Math.round(hours * 100) / 100;
+}
+
+function isWeeklyNotificationTime(now = new Date()) {
+    return now.getDay() === 1
+        && now.getHours() === WEEKLY_NOTIFY_HOUR
+        && now.getMinutes() === WEEKLY_NOTIFY_MINUTE;
+}
+
 // ── HTML escape (only need to escape <, >, &) ───────
 function esc(text) {
     return String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -218,6 +310,49 @@ function buildResultMessage(entries, employeeName, hourlyRate) {
     return msg;
 }
 
+function buildWeeklyMessage({ employeeName, weeklyEntries, cumulativeEntries, weekStart, weekEnd, hourlyRate }) {
+    const weeklyTotal = roundHours(sumHours(weeklyEntries));
+    const cumulativeTotal = roundHours(sumHours(cumulativeEntries));
+    const weeklyAvg = weeklyEntries.length > 0 ? (weeklyTotal / weeklyEntries.length).toFixed(2) : '0.00';
+
+    let msg = `📅 <b>BÁO CÁO GIỜ CÔNG TUẦN — ${esc(employeeName)}</b>\n`;
+    msg += `<i>${formatDateVN(weekStart)} - ${formatDateVN(weekEnd)}</i>\n\n`;
+
+    if (weeklyEntries.length === 0) {
+        msg += `Tuần vừa rồi chưa ghi nhận ca làm nào.\n\n`;
+    } else {
+        msg += '<pre>\n';
+        msg += pad('Ngày', 18) + pad('Vào', 7) + pad('Ra', 7) + pad('Giờ', 5) + '\n';
+        msg += '─'.repeat(37) + '\n';
+
+        for (const e of weeklyEntries) {
+            const dayLabel = e.date ? `${e.dayName} ${formatDateVN(e.date).slice(0, 5)}` : `${e.dayName} (${e.day})`;
+            const cookIcon = e.isCookClosing ? '🍳' : '';
+            msg += pad(dayLabel + cookIcon, 18)
+                + pad(formatTime(e.startTime), 7)
+                + pad(formatTime(e.endTime), 7)
+                + pad(String(e.hours), 5) + '\n';
+        }
+        msg += '─'.repeat(37) + '\n';
+        msg += pad('TỔNG TUẦN', 32) + pad(String(weeklyTotal), 5) + '\n';
+        msg += '</pre>\n\n';
+    }
+
+    msg += `📈 <b>Tổng kết:</b>\n`;
+    msg += `• Số ca tuần vừa rồi: <b>${weeklyEntries.length}</b>\n`;
+    msg += `• Giờ công tuần vừa rồi: <b>${weeklyTotal}h</b>\n`;
+    msg += `• Trung bình tuần: <b>${weeklyAvg}h/ca</b>\n`;
+    msg += `• Tổng giờ công tính tới tuần này: <b>${cumulativeTotal}h</b>\n`;
+
+    if (hourlyRate && hourlyRate > 0) {
+        msg += `\n💰 <b>Lương tạm tính theo tổng giờ tới tuần này:</b>\n`;
+        msg += `• Rate: ${formatMoney(hourlyRate)} VNĐ/h\n`;
+        msg += `• Tổng tạm tính: <b>${formatMoney(cumulativeTotal * hourlyRate)} VNĐ</b>`;
+    }
+
+    return msg;
+}
+
 function pad(str, len) {
     if (str.length >= len) return str;
     return str + ' '.repeat(len - str.length);
@@ -242,6 +377,7 @@ bot.onText(/\/start/, (msg) => {
         + `Tôi là bot tra cứu <b>Bảng công KFC</b>.\n\n`
         + `📋 Các lệnh:\n`
         + `• /timesheet — Tự động lấy bảng công\n`
+        + `• /weeklyreport — Gửi thử báo cáo tuần vừa rồi\n`
         + `• /paste — Nhập dữ liệu thủ công\n`
         + `• /setrate &lt;số&gt; — Đặt lương/giờ\n`
         + `• /accounts — Quản lý tài khoản đã lưu\n`
@@ -265,7 +401,10 @@ bot.onText(/\/help/, (msg) => {
         + `<b>3. Đặt lương/giờ:</b>\n`
         + `Gửi /setrate 25000 để tính lương tự động.\n`
         + `Rate được lưu cho các lần sau.\n\n`
-        + `<b>4. Hủy thao tác:</b>\n`
+        + `<b>4. Báo cáo tự động:</b>\n`
+        + `Bot tự gửi giờ công tuần trước và tổng giờ công vào 00:00 thứ Hai.\n`
+        + `Có thể gửi thử bằng /weeklyreport nếu đã lưu tài khoản.\n\n`
+        + `<b>5. Hủy thao tác:</b>\n`
         + `Gửi /cancel bất cứ lúc nào để quay về.\n\n`
         + `❓ Liên hệ admin nếu gặp vấn đề.`,
         HTML
@@ -476,6 +615,27 @@ bot.onText(/\/setrate\s*(.*)/, (msg, match) => {
     bot.sendMessage(chatId, `✅ Đã đặt lương: <b>${formatMoney(rate)} VNĐ/h</b>`, HTML);
 });
 
+// ── /weeklyreport: Manual trigger for previous week ─
+bot.onText(/\/weeklyreport/, async (msg) => {
+    const chatId = String(msg.chat.id);
+    const accounts = getAccounts(chatId);
+
+    if (accounts.length === 0) {
+        bot.sendMessage(chatId, '📭 Chưa có tài khoản nào được lưu.\nSử dụng /timesheet để đăng nhập thành công trước.');
+        return;
+    }
+
+    const weekRange = getPreviousWeekRange();
+    bot.sendMessage(chatId,
+        `⏳ Đang gửi báo cáo tuần ${formatDateVN(weekRange.start)} - ${formatDateVN(weekRange.end)}...`,
+        HTML
+    );
+
+    for (const account of accounts) {
+        await sendWeeklyReportForAccount(chatId, account, weekRange, { force: true });
+    }
+});
+
 // ── Message handler (conversation flow) ─────────────
 bot.on('message', async (msg) => {
     const chatId = msg.chat.id;
@@ -599,6 +759,98 @@ bot.on('message', async (msg) => {
     }
 });
 
+// ── Weekly automatic reports ────────────────────────
+async function sendWeeklyReportForAccount(chatId, account, weekRange, options = {}) {
+    const weekKey = dateKey(weekRange.start);
+    if (!options.force && wasWeeklySent(chatId, account.username, weekKey)) return;
+
+    try {
+        const result = await scrapeTimesheet(account.username, account.password);
+        const entries = annotateEntriesWithDates(parseEntries(result.tableData || ''), weekRange.end)
+            .filter(e => e.date)
+            .sort((a, b) => a.date - b.date || a.startTime.localeCompare(b.startTime));
+
+        if (entries.length === 0) {
+            await bot.sendMessage(chatId,
+                `⚠️ Không thể phân tích bảng công tuần ${formatDateVN(weekRange.start)} - ${formatDateVN(weekRange.end)} cho ${esc(account.name)}.`,
+                HTML
+            );
+            return;
+        }
+
+        const weeklyEntries = entries.filter(e => isWithinRange(e.date, weekRange.start, weekRange.end));
+        const cumulativeEntries = entries.filter(e => startOfDay(e.date).getTime() <= weekRange.end.getTime());
+        const hourlyRate = getUserRate(chatId);
+        const message = buildWeeklyMessage({
+            employeeName: result.employeeName || account.name || account.username,
+            weeklyEntries,
+            cumulativeEntries,
+            weekStart: weekRange.start,
+            weekEnd: weekRange.end,
+            hourlyRate,
+        });
+
+        await bot.sendMessage(chatId, message, HTML);
+
+        if (result.employeeName && result.employeeName !== account.name) {
+            saveAccount(chatId, account.username, account.password, result.employeeName);
+        }
+
+        if (!options.force) {
+            markWeeklySent(chatId, account.username, weekKey);
+        }
+    } catch (err) {
+        console.error(`Weekly report failed for ${chatId}/${account.username}:`, err.message);
+        await bot.sendMessage(chatId,
+            `❌ Không gửi được báo cáo giờ công tuần cho <b>${esc(account.name || account.username)}</b>.\n`
+            + `<b>Lỗi:</b> ${esc(err.message)}`,
+            HTML
+        );
+    }
+}
+
+async function sendWeeklyReports() {
+    const weekRange = getPreviousWeekRange();
+    const chatIds = Object.keys(savedAccounts);
+
+    if (chatIds.length === 0) {
+        console.log('Weekly report skipped: no saved Telegram accounts.');
+        return;
+    }
+
+    console.log(`Starting weekly reports for ${formatDateVN(weekRange.start)} - ${formatDateVN(weekRange.end)}...`);
+
+    for (const chatId of chatIds) {
+        const accounts = getAccounts(chatId);
+        for (const account of accounts) {
+            await sendWeeklyReportForAccount(chatId, account, weekRange);
+        }
+    }
+
+    console.log('Weekly reports finished.');
+}
+
+function startWeeklyReportScheduler() {
+    setInterval(() => {
+        const now = new Date();
+        if (!isWeeklyNotificationTime(now)) return;
+
+        const { start } = getPreviousWeekRange(now);
+        const weekKey = dateKey(start);
+        const pendingAccounts = Object.entries(savedAccounts).some(([chatId, accounts]) =>
+            accounts.some(account => !wasWeeklySent(chatId, account.username, weekKey))
+        );
+
+        if (pendingAccounts) {
+            sendWeeklyReports().catch(err => {
+                console.error('Weekly report scheduler failed:', err.message);
+            });
+        }
+    }, WEEKLY_NOTIFY_INTERVAL_MS);
+
+    console.log(`📅 Weekly Telegram reports scheduled for Monday ${String(WEEKLY_NOTIFY_HOUR).padStart(2, '0')}:${String(WEEKLY_NOTIFY_MINUTE).padStart(2, '0')} (${WEEKLY_NOTIFY_TIMEZONE}).`);
+}
+
 // ── Error handling ──────────────────────────────────
 bot.on('polling_error', (err) => {
     if (bot._shuttingDown) return;
@@ -620,6 +872,8 @@ function gracefulShutdown() {
 
 process.on('SIGINT', gracefulShutdown);
 process.on('SIGTERM', gracefulShutdown);
+
+startWeeklyReportScheduler();
 
 console.log('🤖 Telegram Bot is running...');
 module.exports = bot;
