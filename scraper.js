@@ -1,4 +1,6 @@
-const { chromium } = require('playwright');
+import { chromium } from 'playwright';
+import fs from 'fs';
+
 
 async function scrapeTimesheet(username, password) {
     let browser;
@@ -86,7 +88,6 @@ async function scrapeTimesheet(username, password) {
             console.log('Timesheet rows not found within 15s. Taking debug snapshot...');
             await page.screenshot({ path: 'debug.png', fullPage: true });
             const html = await page.content();
-            const fs = require('fs');
             fs.writeFileSync('debug.html', html);
             throw new Error(`Không thấy dữ liệu bảng công. Đã lưu ảnh màn hình hiện trường vào file 'debug.png'.`);
         }
@@ -128,4 +129,4 @@ async function scrapeTimesheet(username, password) {
     }
 }
 
-module.exports = { scrapeTimesheet };
+export { scrapeTimesheet };

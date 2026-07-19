@@ -1,8 +1,12 @@
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
-const path = require('path');
-const { scrapeTimesheet } = require('./scraper');
+import 'dotenv/config';
+import express from 'express';
+import cors from 'cors';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { scrapeTimesheet } from './scraper.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -36,9 +40,9 @@ app.listen(PORT, () => {
     console.log(`Server is running at http://localhost:${PORT}`);
 
     // Start Telegram Bot (optional — only if TELEGRAM_BOT_TOKEN is set)
-    try {
-        require('./telegram-bot');
-    } catch (err) {
-        console.error('Failed to start Telegram Bot:', err.message);
-    }
+    import('./telegram-bot.js').catch(err => {
+        if (err.message !== 'TELEGRAM_BOT_DISABLED') {
+            console.error('Failed to start Telegram Bot:', err.message);
+        }
+    });
 });

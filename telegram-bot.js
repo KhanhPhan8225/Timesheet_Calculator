@@ -1,13 +1,16 @@
-const TelegramBot = require('node-telegram-bot-api');
-const { scrapeTimesheet } = require('./scraper');
-const fs = require('fs');
-const path = require('path');
+import TelegramBot from 'node-telegram-bot-api';
+import { scrapeTimesheet } from './scraper.js';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 if (!TOKEN) {
     console.warn('⚠️ TELEGRAM_BOT_TOKEN not set — Telegram Bot disabled.');
-    module.exports = null;
-    return;
+    throw new Error('TELEGRAM_BOT_DISABLED');
 }
 
 const bot = new TelegramBot(TOKEN, { polling: true });
@@ -876,4 +879,4 @@ process.on('SIGTERM', gracefulShutdown);
 startWeeklyReportScheduler();
 
 console.log('🤖 Telegram Bot is running...');
-module.exports = bot;
+export default bot;
